@@ -181,7 +181,7 @@ stepFunctions:
             Apply Factors:
               Next: Apply Outcome
               Resource:
-                - arn:aws:lambda:eu-west-2:014669633018:function:TempLambda
+                - arn: [McImputeApplyFactorsWranglerLambdaFunction,Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -204,7 +204,7 @@ stepFunctions:
                     County Total:
                       Type: Task
                       Resource:
-                        -  arnakshdkashdkahs
+                        -  arn: [McImputeCountyTotalWranglerLambdaFunction,Arn]
                       End: true
 
                 - StartAt: EntRef Count
@@ -212,7 +212,7 @@ stepFunctions:
                     EntRef Count:
                       Type: Task
                       Resource:
-                        -  arnakshdkashdkahs
+                        -  arn: [McImputeEntRefCountWranglerLambdaFunction,Arn]
                       End: true
 
                 - StartAt: EntRef Count
@@ -220,13 +220,13 @@ stepFunctions:
                     Calculate Top2:
                       Type: Task
                       Resource:
-                        -  arnakshdkashdkahs
+                        -  arn: [McImputeTop2WranglerLambdaFunction,Arn]
                       End: true
 
             Combiner:
               Next: Combiner Outcome
               Resource:
-                - insert arn here
+                - arn: [McImputeCombinerWranglerLambdaFunction,Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -243,11 +243,53 @@ stepFunctions:
             Stage 1:
               Next: Stage 1 Outcome
               Resource:
-                - insert arn here
+                - arn: [McImputeStage1WranglerLambdaFunction,Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
+            Stage 1 Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Stage 2
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
 
+            Stage 2:
+              Next: Stage 2 Outcome
+              Resource:
+                - arn: [McImputeStage2WranglerLambdaFunction,Arn]
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Stage 2 Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Stage 5
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
+
+            Stage 5:
+              Next: Stage 5 Outcome
+              Resource:
+                - arn: [McImputeStage5WranglerLambdaFunction,Arn]
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Stage 5 Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Success
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
 
             Success:
               End: true

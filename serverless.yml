@@ -1,0 +1,268 @@
+stepFunctions:
+  stateMachines:
+    ES-BMISG-Results:
+        name: ES-BMISG-Results
+        tags:
+            app: results
+        definition:
+          Comment: Calls the lambdas required to run the BMI Sand and Gravel Survey
+          StartAt: Inputs
+          States:
+
+            Inputs:
+              Next: Choice State
+              Parameters:
+                MessageStructure: json
+                RuntimeVariables:
+                  checkpoint: 1
+                  id.$: $.id
+                  period.$: $.period
+              Type: Pass
+
+            Choice State:
+              Choices:
+              - Next: Enrichment
+                NumericEquals: 1
+                Variable: $.RuntimeVariables.checkpoint
+              - Next: Strata
+                NumericEquals: 2
+                Variable: $.RuntimeVariables.checkpoint
+              - Next: Imputation Calculate Movements
+                NumericEquals: 3
+                Variable: $.RuntimeVariables.checkpoint
+              Type: Choice
+
+            Enrichment:
+              Next: Enrichment Outcome
+              Resource:
+                arn: [McEnrichWranglerLambdaFunction,Arn]
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Enrichment Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Strata
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
+
+            Strata:
+              Next: Strata Outcome
+              Resource:
+               arn: [McStrataWranglerLambdaFunction,Arn]
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Strata Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Imputation Calculate Movements
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
+
+            Imputation Calculate Movements:
+              Next: Movements Outcome
+              Resource:
+                arn: [McImputeMovementWranglerLambdaFunction,Arn]
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Movements Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Should Imputation Run
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
+
+            Should Imputation Run:
+              Choices:
+              - BooleanEquals: true
+                Next: Calculate Means
+                Variable: $.data.lambdaresult.Impute
+              - BooleanEquals: false
+                Next: Success
+                Variable: $.data.lambdaresult.Impute
+              Type: Choice
+
+            Calculate Means:
+              Next: Means Outcome
+              Resource:
+                arn: [McImputeMeansWranglerLambdaFunction,Arn]
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Means Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Calculate IQRS
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
+
+            Calculate IQRS:
+              Next: IQRS Outcome
+              Resource:
+                arn: [McImputeIqrsWranglerLambdaFunction,Arn]
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            IQRS Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Calculate Atypicals
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
+
+            Calculate Atypicals:
+              Next: Atypicals Outcome
+              Resource:
+                arn: [McImputeAtypsWranglerLambdaFunction,Arn]
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Atypicals Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Re-Calculate Means
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
+
+            Re-Calculate Means:
+              Next: Re-Calculate Means Outcome
+              Resource:
+                arn: [McImputeRecalcWranglerLambdaFunction,Arn]
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Re-Calculate Means Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Calculate Factors
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
+
+            Calculate Factors:
+              Next: Factors Outcome
+              Resource:
+                arn: [McImputeCalcFactorsWranglerLambdaFunction,Arn]
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Factors Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Apply Factors
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
+
+            Apply Factors:
+              Next: Apply Outcome
+              Resource:
+                - arn:aws:lambda:eu-west-2:014669633018:function:TempLambda
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Apply Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Aggregation
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
+
+            Aggregation:
+              Type: Parallel
+              Next: Combiner
+              Branches:
+                - StartAt: County Total
+                  States:
+                    County Total:
+                      Type: Task
+                      Resource:
+                        -  arnakshdkashdkahs
+                      End: true
+
+                - StartAt: EntRef Count
+                  States:
+                    EntRef Count:
+                      Type: Task
+                      Resource:
+                        -  arnakshdkashdkahs
+                      End: true
+
+                - StartAt: EntRef Count
+                  States:
+                    Calculate Top2:
+                      Type: Task
+                      Resource:
+                        -  arnakshdkashdkahs
+                      End: true
+
+            Combiner:
+              Next: Combiner Outcome
+              Resource:
+                - insert arn here
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Combiner Outcome:
+              Choices:
+              - BooleanEquals: true
+                Next: Stage 1
+                Variable: $.data.lambdaresult.success
+              - BooleanEquals: false
+                Next: Failure
+                Variable: $.data.lambdaresult.success
+              Type: Choice
+
+            Stage 1:
+              Next: Stage 1 Outcome
+              Resource:
+                - insert arn here
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+
+
+            Success:
+              End: true
+              Resource:
+               arn: [McStatisticalMethodReturnLambdaFunction,Arn]
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Failure:
+              End: true
+              Resource:
+                arn: [McRuntimeErrorCaptureLambdaFunction,Arn]
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+plugins:
+  - serverless-step-functions
+  - serverless-pseudo-parameters

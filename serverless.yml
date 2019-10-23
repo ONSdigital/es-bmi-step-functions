@@ -1,3 +1,11 @@
+service: aws-python-example
+provider:
+  name: aws
+  runtime: python3.7
+  region: eu-west-2
+  package:
+    individually: true
+
 stepFunctions:
   stateMachines:
     ES-BMISG-Results:

@@ -43,7 +43,7 @@ stepFunctions:
             Enrichment:
               Next: Enrichment Outcome
               Resource:
-                arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.enrichment))
+                - arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.enrichment))
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -60,7 +60,7 @@ stepFunctions:
             Strata:
               Next: Strata Outcome
               Resource:
-               arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.strata))
+               - arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.strata))
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -77,7 +77,7 @@ stepFunctions:
             Imputation Calculate Movements:
               Next: Movements Outcome
               Resource:
-                arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-movements))
+                - arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-movements))
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -104,7 +104,7 @@ stepFunctions:
             Calculate Means:
               Next: Means Outcome
               Resource:
-                arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-means))
+                - arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-means))
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -138,7 +138,7 @@ stepFunctions:
             Calculate Atypicals:
               Next: Atypicals Outcome
               Resource:
-                arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-atyps))
+                - arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-atyps))
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -155,7 +155,7 @@ stepFunctions:
             Re-Calculate Means:
               Next: Re-Calculate Means Outcome
               Resource:
-                arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-recalc-means))
+                - arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-recalc-means))
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -172,7 +172,7 @@ stepFunctions:
             Calculate Factors:
               Next: Factors Outcome
               Resource:
-                arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-calc-factors))
+                - arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-calc-factors))
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -212,7 +212,7 @@ stepFunctions:
                     County Total:
                       Type: Task
                       Resource:
-                        -  arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-county))
+                        - arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-county))
                       End: true
 
                 - StartAt: EntRef Count
@@ -220,7 +220,7 @@ stepFunctions:
                     EntRef Count:
                       Type: Task
                       Resource:
-                        -  arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-entref))
+                        - arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-entref))
                       End: true
 
                 - StartAt: Calculate Top2
@@ -228,7 +228,7 @@ stepFunctions:
                     Calculate Top2:
                       Type: Task
                       Resource:
-                        -  arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-top2))
+                        - arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-top2))
                       End: true
 
             Combiner:
@@ -302,14 +302,14 @@ stepFunctions:
             Success:
               End: true
               Resource:
-               arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.method-return))
+               - arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.method-return))
               ResultPath: $.data.lambdaresult
               Type: Task
 
             Failure:
               End: true
               Resource:
-                arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.error-capture))
+                - arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.error-capture))
               ResultPath: $.data.lambdaresult
               Type: Task
 

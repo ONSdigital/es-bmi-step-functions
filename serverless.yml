@@ -314,6 +314,5 @@ stepFunctions:
               Type: Task
 
 plugins:
-  - serverless-offline
   - serverless-step-functions
   - serverless-pseudo-parameters

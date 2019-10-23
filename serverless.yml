@@ -42,7 +42,8 @@ stepFunctions:
 
             Enrichment:
               Next: Enrichment Outcome
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.enrichment))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.enrichment)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -59,7 +60,7 @@ stepFunctions:
             Strata:
               Next: Strata Outcome
               Resource:
-               - arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.strata))
+               Fn::getAtt: [((bmi-sg-wranglers.strata)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -75,7 +76,8 @@ stepFunctions:
 
             Imputation Calculate Movements:
               Next: Movements Outcome
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-movements))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.imputation-movements)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -101,7 +103,8 @@ stepFunctions:
 
             Calculate Means:
               Next: Means Outcome
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-means))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.imputation-means)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -117,7 +120,8 @@ stepFunctions:
 
             Calculate IQRS:
               Next: IQRS Outcome
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-iqrs))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.imputation-iqrs)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -133,7 +137,8 @@ stepFunctions:
 
             Calculate Atypicals:
               Next: Atypicals Outcome
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-atyps))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.imputation-atyps)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -149,7 +154,8 @@ stepFunctions:
 
             Re-Calculate Means:
               Next: Re-Calculate Means Outcome
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-recalc-means))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.imputation-recalc-means)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -165,7 +171,8 @@ stepFunctions:
 
             Calculate Factors:
               Next: Factors Outcome
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-calc-factors))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.imputation-calc-factors)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -181,7 +188,8 @@ stepFunctions:
 
             Apply Factors:
               Next: Apply Outcome
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-apply-factors))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.imputation-apply-factors)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -204,7 +212,7 @@ stepFunctions:
                     County Total:
                       Type: Task
                       Resource:
-                        - arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-county))
+                        Fn::getAtt: [((bmi-sg-wranglers.aggregation-county)),Arn]
                       End: true
 
                 - StartAt: EntRef Count
@@ -212,7 +220,7 @@ stepFunctions:
                     EntRef Count:
                       Type: Task
                       Resource:
-                        - arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-entref))
+                        Fn::getAtt: [((bmi-sg-wranglers.aggregation-entref)),Arn]
                       End: true
 
                 - StartAt: Calculate Top2
@@ -220,12 +228,13 @@ stepFunctions:
                     Calculate Top2:
                       Type: Task
                       Resource:
-                        - arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-top2))
+                        Fn::getAtt: [((bmi-sg-wranglers.aggregation-top2)),Arn]
                       End: true
 
             Combiner:
               Next: Combiner Outcome
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-combiner))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.aggregation-combiner)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -241,7 +250,8 @@ stepFunctions:
 
             Stage 1:
               Next: Stage 1 Outcome
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.disclosure-stage1))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.disclosure-stage1)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -257,7 +267,8 @@ stepFunctions:
 
             Stage 2:
               Next: Stage 2 Outcome
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.disclosure-stage2))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.disclosure-stage2)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -273,7 +284,8 @@ stepFunctions:
 
             Stage 5:
               Next: Stage 5 Outcome
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.disclosure-stage5))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.disclosure-stage5)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -289,13 +301,15 @@ stepFunctions:
 
             Success:
               End: true
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.method-return))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.method-return)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 
             Failure:
               End: true
-              arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.error-capture))
+              Resource:
+                Fn::getAtt: [((bmi-sg-wranglers.error-capture)),Arn]
               ResultPath: $.data.lambdaresult
               Type: Task
 

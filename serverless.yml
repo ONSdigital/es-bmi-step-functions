@@ -1,4 +1,4 @@
-service: aws-python-mike
+service: aws-python-example
 provider:
   name: aws
   runtime: python3.7
@@ -314,4 +314,6 @@ stepFunctions:
               Type: Task
 
 plugins:
+  - serverless-offline
   - serverless-step-functions
+  - serverless-pseudo-parameters

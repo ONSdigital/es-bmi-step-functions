@@ -294,14 +294,14 @@ stepFunctions:
             Success:
               End: true
               Resource:
-               arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.success))
+               arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.method-return))
               ResultPath: $.data.lambdaresult
               Type: Task
 
             Failure:
               End: true
               Resource:
-                arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.failure))
+                arn: arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.error-capture))
               ResultPath: $.data.lambdaresult
               Type: Task
 

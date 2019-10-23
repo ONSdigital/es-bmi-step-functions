@@ -1,4 +1,4 @@
-service: aws-python-example
+service: aws-python-mike
 provider:
   name: aws
   runtime: python3.7

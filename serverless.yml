@@ -42,8 +42,7 @@ stepFunctions:
 
             Enrichment:
               Next: Enrichment Outcome
-              Resource:
-                Fn::getAtt: [esDashenrichmentDashwranglerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.enrichment))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -59,8 +58,7 @@ stepFunctions:
 
             Strata:
               Next: Strata Outcome
-              Resource:
-               Fn::getAtt: [esDashstrataDashperiodDashwranglerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.strata))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -76,8 +74,7 @@ stepFunctions:
 
             Imputation Calculate Movements:
               Next: Movements Outcome
-              Resource:
-                Fn::getAtt: [esDashcalculateDashmovementDashwranglerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-movements))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -103,8 +100,7 @@ stepFunctions:
 
             Calculate Means:
               Next: Means Outcome
-              Resource:
-                Fn::getAtt: [esDashcalculateDashmeansDashwranglerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-means))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -120,8 +116,7 @@ stepFunctions:
 
             Calculate IQRS:
               Next: IQRS Outcome
-              Resource:
-                Fn::getAtt: [esDashiqrsDashwranglerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-iqrs))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -137,8 +132,7 @@ stepFunctions:
 
             Calculate Atypicals:
               Next: Atypicals Outcome
-              Resource:
-                Fn::getAtt: [esDashatypicalsDashwranglerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-atyps))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -154,8 +148,7 @@ stepFunctions:
 
             Re-Calculate Means:
               Next: Re-Calculate Means Outcome
-              Resource:
-                Fn::getAtt: [esDashrecalculateDashmeansDashwranglerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-recalc-means))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -171,8 +164,7 @@ stepFunctions:
 
             Calculate Factors:
               Next: Factors Outcome
-              Resource:
-                Fn::getAtt: [esDashcalculateDashfactorsDashwranglerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-calc-factors))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -188,8 +180,7 @@ stepFunctions:
 
             Apply Factors:
               Next: Apply Outcome
-              Resource:
-                Fn::getAtt: [esDashapplyDashfactorsDashwranglerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.imputation-apply-factors))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -211,30 +202,26 @@ stepFunctions:
                   States:
                     County Total:
                       Type: Task
-                      Resource:
-                        Fn::getAtt: [esDashaggregationDashcountyDashwranglerLambdaFunction,Arn]
+                      Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-county))"
                       End: true
 
                 - StartAt: EntRef Count
                   States:
                     EntRef Count:
                       Type: Task
-                      Resource:
-                        Fn::getAtt: [esDashaggregationDashentrefDashwranglerLambdaFunction,Arn]
+                      Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-entref))"
                       End: true
 
                 - StartAt: Calculate Top2
                   States:
                     Calculate Top2:
                       Type: Task
-                      Resource:
-                        Fn::getAtt: [esDashaggregationDashtop2DashwranglerLambdaFunction,Arn]
+                      Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-top2))"
                       End: true
 
             Combiner:
               Next: Combiner Outcome
-              Resource:
-                Fn::getAtt: [esDasgaggregationDashcombinerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.aggregation-combiner))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -250,8 +237,7 @@ stepFunctions:
 
             Stage 1:
               Next: Stage 1 Outcome
-              Resource:
-                Fn::getAtt: [esDashdisclosureDashstage1DashwranglerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.disclosure-stage1))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -267,8 +253,7 @@ stepFunctions:
 
             Stage 2:
               Next: Stage 2 Outcome
-              Resource:
-                Fn::getAtt: [esDashdisclosureDashstage2DashwranglerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.disclosure-stage2))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -284,8 +269,7 @@ stepFunctions:
 
             Stage 5:
               Next: Stage 5 Outcome
-              Resource:
-                Fn::getAtt: [esDashdisclosureDashstage5DashwranglerLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.disclosure-stage5))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -301,18 +285,15 @@ stepFunctions:
 
             Success:
               End: true
-              Resource:
-                Fn::getAtt: [es_statistical_method_returnLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.method-return))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
             Failure:
               End: true
-              Resource:
-                Fn::getAtt: [runtime_error_captureLambdaFunction,Arn]
+              Resource: "arn:aws:lambda:eu-west-2:((aws-accounts.dev-account)):function:((bmi-sg-wranglers.error-capture))"
               ResultPath: $.data.lambdaresult
               Type: Task
 
 plugins:
   - serverless-step-functions
-  - serverless-pseudo-parameters

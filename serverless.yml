@@ -41,7 +41,7 @@ stepFunctions:
               - Next: Aggregation
                 NumericEquals: 4
                 Variable: $.RuntimeVariables.checkpoint
-              - Next: Disclosure
+              - Next: Stage 1
                 NumericEquals: 5
                 Variable: $.RuntimeVariables.checkpoint
               Type: Choice

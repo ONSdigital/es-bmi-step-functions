@@ -1,4 +1,4 @@
-service: aws-python-test
+service: es-bmi-results-sg
 provider:
   name: aws
   runtime: python3.7
@@ -37,6 +37,12 @@ stepFunctions:
                 Variable: $.RuntimeVariables.checkpoint
               - Next: Imputation Calculate Movements
                 NumericEquals: 3
+                Variable: $.RuntimeVariables.checkpoint
+              - Next: Aggregation
+                NumericEquals: 4
+                Variable: $.RuntimeVariables.checkpoint
+              - Next: Disclosure
+                NumericEquals: 5
                 Variable: $.RuntimeVariables.checkpoint
               Type: Choice
 

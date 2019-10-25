@@ -6,6 +6,10 @@ provider:
   package:
     individually: true
 
+custom:
+  secrets: ${ssm:/aws/reference/secretsmanager/aws-accounts~true}
+  accountId: ${self:custom.secrets.accountId}
+
 stepFunctions:
   stateMachines:
     ES-BMISG-Results:
@@ -48,7 +52,7 @@ stepFunctions:
 
             Enrichment:
               Next: Enrichment Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${ssm:/aws/concourse/results/aws-accounts.dev-account~true}:function:es-enrichment-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-enrichment-wrangler"
               ResultPath: $.data.lambdaresult
               Type: Task
 

@@ -10,6 +10,28 @@ custom:
   accounts: ${ssm:/aws/reference/secretsmanager/aws-accounts~true}
   accountId: ${self:custom.accounts.accountId}
 
+  wranglers: ${ssm:/aws/reference/secretsmanager/bmi-sg-wranglers~true}
+
+  ingest: ${self:custom.wranglers.ingest}
+  enrichment: ${self:custom.wranglers.enrichment}
+  strata: ${self:custom.wranglers.strata}
+  imputation-movements: ${self:custom.wranglers.imputation-movements}
+  imputation-means: ${self:custom.wranglers.imputation-means}
+  imputation-iqrs: ${self:custom.wranglers.imputation-iqrs}
+  imputation-atyps: ${self:custom.wranglers.imputation-atyps}
+  imputation-recal-means: ${self:custom.wranglers.imputation-recal-means}
+  imputation-calc-factors: ${self:custom.wranglers.imputation-calc-factors}
+  imputation-apply-factors: ${self:custom.wranglers.imputation-apply-factors}
+  aggregation-top2: ${self:custom.wranglers.aggregation-top2}
+  aggregation-entref: ${self:custom.wranglers.aggregation-entref}
+  aggregation-county: ${self:custom.wranglers.aggregation-county}
+  aggregation-combiner: ${self:custom.wranglers.aggregation-combiner}
+  disclosure-stage1: ${self:custom.wranglers.disclosure-stage1}
+  disclosure-stage2: ${self:custom.wranglers.disclosure-stage2}
+  disclosure-stage5: ${self:custom.wranglers.disclosure-stage5}
+  error-capture: ${self:custom.wranglers.error-capture}
+  method-return: ${self:custom.wranglers.method-return}
+
 stepFunctions:
   stateMachines:
     ES-BMISG-Results:
@@ -33,6 +55,9 @@ stepFunctions:
 
             Choice State:
               Choices:
+              - Next: Ingest
+                NumericEquals: 0
+                Variable: $.RuntimeVariables.checkpoint
               - Next: Enrichment
                 NumericEquals: 1
                 Variable: $.RuntimeVariables.checkpoint
@@ -50,9 +75,25 @@ stepFunctions:
                 Variable: $.RuntimeVariables.checkpoint
               Type: Choice
 
+            Ingest:
+              Next: Ingest Outcome
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.ingest}"
+              ResultPath: $.data.lambdaresult
+              Type: Task
+
+            Ingest Outcome:
+              Choices:
+                - BooleanEquals: true
+                  Next: Enrichment
+                  Variable: $.data.lambdaresult.success
+                - BooleanEquals: false
+                  Next: Failure
+                  Variable: $.data.lambdaresult.success
+              Type: Choice
+
             Enrichment:
               Next: Enrichment Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-enrichment-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.enrichment}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -68,7 +109,7 @@ stepFunctions:
 
             Strata:
               Next: Strata Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-strata-period-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.strata}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -84,7 +125,7 @@ stepFunctions:
 
             Imputation Calculate Movements:
               Next: Movements Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-calculate-movements-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-movements}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -110,7 +151,7 @@ stepFunctions:
 
             Calculate Means:
               Next: Means Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-calculate-means-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-means}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -126,7 +167,7 @@ stepFunctions:
 
             Calculate IQRS:
               Next: IQRS Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-iqrs-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputations-iqrs}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -142,7 +183,7 @@ stepFunctions:
 
             Calculate Atypicals:
               Next: Atypicals Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-atypicals-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-atyps}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -158,7 +199,7 @@ stepFunctions:
 
             Re-Calculate Means:
               Next: Re-Calculate Means Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-recalculate-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-recal-means}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -174,7 +215,7 @@ stepFunctions:
 
             Calculate Factors:
               Next: Factors Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-calculate-factors-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-calc-factors}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -190,7 +231,7 @@ stepFunctions:
 
             Apply Factors:
               Next: Apply Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-apply-factors-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-apply-factors}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -212,26 +253,26 @@ stepFunctions:
                   States:
                     County Total:
                       Type: Task
-                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-aggregation-county-wrangler"
+                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-county}"
                       End: true
 
                 - StartAt: EntRef Count
                   States:
                     EntRef Count:
                       Type: Task
-                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-aggregation-entref-wrangler"
+                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-entref}"
                       End: true
 
                 - StartAt: Calculate Top2
                   States:
                     Calculate Top2:
                       Type: Task
-                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-aggregation-top2-wrangler"
+                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"
                       End: true
 
             Combiner:
               Next: Combiner Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-aggregation-combiner-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -247,7 +288,7 @@ stepFunctions:
 
             Stage 1:
               Next: Stage 1 Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-disclosure-stage-1-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-stage1}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -263,7 +304,7 @@ stepFunctions:
 
             Stage 2:
               Next: Stage 2 Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-disclosure-stage-2-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-stage2}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -279,7 +320,7 @@ stepFunctions:
 
             Stage 5:
               Next: Stage 5 Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:es-disclosure-stage-5-wrangler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-stage5}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -295,13 +336,13 @@ stepFunctions:
 
             Success:
               End: true
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:success_handler"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.method-return}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
             Failure:
               End: true
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:runtime_error_capture"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.error-capture}"
               ResultPath: $.data.lambdaresult
               Type: Task
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd bmi-step-functions
+cd step-function-deploy-repository
 
 serverless plugin install --name serverless-step-functions
 echo Packaging serverless bundle...

@@ -19,7 +19,7 @@ custom:
   imputation-means: ${self:custom.wranglers.imputation-means}
   imputation-iqrs: ${self:custom.wranglers.imputation-iqrs}
   imputation-atyps: ${self:custom.wranglers.imputation-atyps}
-  imputation-recal-means: ${self:custom.wranglers.imputation-recal-means}
+  imputation-recalc-means: ${self:custom.wranglers.imputation-recalc-means}
   imputation-calc-factors: ${self:custom.wranglers.imputation-calc-factors}
   imputation-apply-factors: ${self:custom.wranglers.imputation-apply-factors}
   aggregation-top2: ${self:custom.wranglers.aggregation-top2}
@@ -167,7 +167,7 @@ stepFunctions:
 
             Calculate IQRS:
               Next: IQRS Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputations-iqrs}"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-iqrs}"
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -199,7 +199,7 @@ stepFunctions:
 
             Re-Calculate Means:
               Next: Re-Calculate Means Outcome
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-recal-means}"
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-recalc-means}"
               ResultPath: $.data.lambdaresult
               Type: Task
 

@@ -10,7 +10,7 @@ custom:
   accounts: ${ssm:/aws/reference/secretsmanager/aws-accounts~true}
   accountId: ${self:custom.accounts.accountId}
 
-  wranglers: ${ssm:/aws/reference/secretsmanager/bmi-sg-wranglers~true}
+  wranglers: ${ssm:/aws/reference/secretsmanager/results-bmi-sg-wranglers~true}
 
   ingest: ${self:custom.wranglers.ingest}
   enrichment: ${self:custom.wranglers.enrichment}

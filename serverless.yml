@@ -142,10 +142,10 @@ stepFunctions:
               Choices:
               - BooleanEquals: true
                 Next: Calculate Means
-                Variable: $.data.lambdaresult.Impute
+                Variable: $.data.lambdaresult.impute
               - BooleanEquals: false
                 Next: Success
-                Variable: $.data.lambdaresult.Impute
+                Variable: $.data.lambdaresult.impute
               Type: Choice
 
             Calculate Means:

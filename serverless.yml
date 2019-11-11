@@ -1,4 +1,4 @@
-service: aws-python-test
+service: bmi-results-sg
 provider:
   name: aws
   runtime: python3.7

@@ -47,7 +47,7 @@ stepFunctions:
               Parameters:
                 MessageStructure: json
                 RuntimeVariables:
-                  checkpoint: 1
+                  checkpoint.$: $.checkpoint
                   id.$: $.id
                   period.$: $.period
               Type: Pass

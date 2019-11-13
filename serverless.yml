@@ -272,17 +272,16 @@ stepFunctions:
             Combiner:
               Next: Combiner Outcome
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"
-              ResultPath: $.data.lambdaresult
               Type: Task
 
             Combiner Outcome:
               Choices:
               - BooleanEquals: true
                 Next: Stage 1
-                Variable: $.data.lambdaresult.success
+                Variable: $.data.success
               - BooleanEquals: false
                 Next: Failure
-                Variable: $.data.lambdaresult.success
+                Variable: $.data.success
               Type: Choice
 
             Stage 1:

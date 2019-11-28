@@ -52,6 +52,8 @@ stepFunctions:
                   checkpoint.$: $.checkpoint
                   id.$: $.id
                   period.$: $.period
+                  calculation_type.$: $.calculation_type
+                  distinct_values.$: $.distinct_values
               Type: Pass
 
             Choice State:
@@ -280,10 +282,10 @@ stepFunctions:
               Choices:
               - BooleanEquals: true
                 Next: Stage 1
-                Variable: $.data.success
+                Variable: $.success
               - BooleanEquals: false
                 Next: Failure
-                Variable: $.data.success
+                Variable: $.success
               Type: Choice
 
             Stage 1:

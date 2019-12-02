@@ -5,6 +5,8 @@ provider:
   region: eu-west-2
   package:
     individually: true
+  deploymentBucket:
+    name: com.serverless.${self:provider.region}.results.ons.deploys
 
 custom:
   accounts: ${ssm:/aws/reference/secretsmanager/results-aws-accounts~true}
@@ -47,9 +49,11 @@ stepFunctions:
               Parameters:
                 MessageStructure: json
                 RuntimeVariables:
-                  checkpoint: 1
+                  checkpoint.$: $.checkpoint
                   id.$: $.id
                   period.$: $.period
+                  calculation_type.$: $.calculation_type
+                  distinct_values.$: $.distinct_values
               Type: Pass
 
             Choice State:
@@ -142,10 +146,10 @@ stepFunctions:
               Choices:
               - BooleanEquals: true
                 Next: Calculate Means
-                Variable: $.data.lambdaresult.Impute
+                Variable: $.data.lambdaresult.impute
               - BooleanEquals: false
                 Next: Success
-                Variable: $.data.lambdaresult.Impute
+                Variable: $.data.lambdaresult.impute
               Type: Choice
 
             Calculate Means:
@@ -272,17 +276,16 @@ stepFunctions:
             Combiner:
               Next: Combiner Outcome
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"
-              ResultPath: $.data.lambdaresult
               Type: Task
 
             Combiner Outcome:
               Choices:
               - BooleanEquals: true
                 Next: Stage 1
-                Variable: $.data.lambdaresult.success
+                Variable: $.success
               - BooleanEquals: false
                 Next: Failure
-                Variable: $.data.lambdaresult.success
+                Variable: $.success
               Type: Choice
 
             Stage 1:

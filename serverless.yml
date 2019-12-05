@@ -54,6 +54,14 @@ stepFunctions:
                   period.$: $.period
                   calculation_type.$: $.calculation_type
                   distinct_values.$: $.distinct_values
+                  disclosivity_marker.$: $.disclosivity_marker
+                  publishable_indicator.$: $.publishable_indicator
+                  explanation.$: $.explanation
+                  total_column.$: $.total_column
+                  parent_column.$: $.parent_column
+                  top1_column.$: $.top1_column
+                  top2_column.$: $.top2_column
+                  threshold.$: $.threshold
               Type: Pass
 
             Choice State:
@@ -73,74 +81,46 @@ stepFunctions:
               - Next: Aggregation
                 NumericEquals: 4
                 Variable: $.RuntimeVariables.checkpoint
-              - Next: Stage 1
+              - Next: Disclosure Stage 1
                 NumericEquals: 5
                 Variable: $.RuntimeVariables.checkpoint
               Type: Choice
 
             Ingest:
-              Next: Ingest Outcome
+              Next: Enrichment
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.ingest}"
+              Catch:
+                ErrorEquals: States.ALL
+                Next : Failure
               ResultPath: $.data.lambdaresult
               Type: Task
-
-            Ingest Outcome:
-              Choices:
-                - BooleanEquals: true
-                  Next: Enrichment
-                  Variable: $.data.lambdaresult.success
-                - BooleanEquals: false
-                  Next: Failure
-                  Variable: $.data.lambdaresult.success
-              Type: Choice
 
             Enrichment:
-              Next: Enrichment Outcome
+              Next: Strata
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.enrichment}"
+              Catch:
+                ErrorEquals: States.ALL
+                Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
-
-            Enrichment Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Strata
-                Variable: $.data.lambdaresult.success
-              - BooleanEquals: false
-                Next: Failure
-                Variable: $.data.lambdaresult.success
-              Type: Choice
 
             Strata:
-              Next: Strata Outcome
+              Next: Imputation Calculate Movements
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.strata}"
+              Catch:
+                ErrorEquals: States.ALL
+                Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
-
-            Strata Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Imputation Calculate Movements
-                Variable: $.data.lambdaresult.success
-              - BooleanEquals: false
-                Next: Failure
-                Variable: $.data.lambdaresult.success
-              Type: Choice
 
             Imputation Calculate Movements:
-              Next: Movements Outcome
+              Next: Should Imputation Run
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-movements}"
+              Catch:
+                ErrorEquals: States.ALL
+                Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
-
-            Movements Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Should Imputation Run
-                Variable: $.data.lambdaresult.success
-              - BooleanEquals: false
-                Next: Failure
-                Variable: $.data.lambdaresult.success
-              Type: Choice
 
             Should Imputation Run:
               Choices:
@@ -153,105 +133,70 @@ stepFunctions:
               Type: Choice
 
             Calculate Means:
-              Next: Means Outcome
+              Next: Calculate IQRS
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-means}"
+              Catch:
+                ErrorEquals: States.ALL
+                Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
-
-            Means Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Calculate IQRS
-                Variable: $.data.lambdaresult.success
-              - BooleanEquals: false
-                Next: Failure
-                Variable: $.data.lambdaresult.success
-              Type: Choice
 
             Calculate IQRS:
-              Next: IQRS Outcome
+              Next: Calculate Atypicals
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-iqrs}"
+              Catch:
+                ErrorEquals: States.ALL
+                Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
-
-            IQRS Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Calculate Atypicals
-                Variable: $.data.lambdaresult.success
-              - BooleanEquals: false
-                Next: Failure
-                Variable: $.data.lambdaresult.success
-              Type: Choice
 
             Calculate Atypicals:
-              Next: Atypicals Outcome
+              Next: Re-Calculate Means
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-atyps}"
+              Catch:
+                ErrorEquals: States.ALL
+                Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
-
-            Atypicals Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Re-Calculate Means
-                Variable: $.data.lambdaresult.success
-              - BooleanEquals: false
-                Next: Failure
-                Variable: $.data.lambdaresult.success
-              Type: Choice
 
             Re-Calculate Means:
-              Next: Re-Calculate Means Outcome
+              Next: Calculate Factors
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-recalc-means}"
+              Catch:
+                ErrorEquals: States.ALL
+                Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
-
-            Re-Calculate Means Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Calculate Factors
-                Variable: $.data.lambdaresult.success
-              - BooleanEquals: false
-                Next: Failure
-                Variable: $.data.lambdaresult.success
-              Type: Choice
 
             Calculate Factors:
-              Next: Factors Outcome
+              Next: Apply Factors
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-calc-factors}"
+              Catch:
+                ErrorEquals: States.ALL
+                Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
-
-            Factors Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Apply Factors
-                Variable: $.data.lambdaresult.success
-              - BooleanEquals: false
-                Next: Failure
-                Variable: $.data.lambdaresult.success
-              Type: Choice
 
             Apply Factors:
-              Next: Apply Outcome
+              Next: Aggregation
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-apply-factors}"
+              Catch:
+                ErrorEquals: States.ALL
+                Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
-
-            Apply Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Aggregation
-                Variable: $.data.lambdaresult.success
-              - BooleanEquals: false
-                Next: Failure
-                Variable: $.data.lambdaresult.success
-              Type: Choice
 
             Aggregation:
               Type: Parallel
               Next: Combiner
+              ResultPath: $
+              OutputPath: $
               Branches:
+                - StartAt: passRuntime
+                  States:
+                    passRuntime:
+                      Type: Pass
+                      End: true
                 - StartAt: County Total
                   States:
                     County Total:
@@ -274,78 +219,58 @@ stepFunctions:
                       End: true
 
             Combiner:
-              Next: Combiner Outcome
+              Next: Disclosure Stage 1
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"
+              Catch:
+                ErrorEquals: States.ALL
+                Next: Failure
+              ResultPath: $[0].data.lambdaresult
+              OutputPath: $
+              InputPath: $
               Type: Task
 
-            Combiner Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Stage 1
-                Variable: $.success
-              - BooleanEquals: false
-                Next: Failure
-                Variable: $.success
-              Type: Choice
-
-            Stage 1:
-              Next: Stage 1 Outcome
+            Disclosure Stage 1:
+              Next: Disclosure Stage 2
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-stage1}"
-              ResultPath: $.data.lambdaresult
+              Catch:
+                ErrorEquals: States.ALL
+                Next: Failure
+              InputPath: $[0]
+              ResultPath: $[0].data.lambdaresult
               Type: Task
 
-            Stage 1 Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Stage 2
-                Variable: $.data.lambdaresult.success
-              - BooleanEquals: false
-                Next: Failure
-                Variable: $.data.lambdaresult.success
-              Type: Choice
-
-            Stage 2:
-              Next: Stage 2 Outcome
+            Disclosure Stage 2:
+              Next: Disclosure Stage 5
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-stage2}"
-              ResultPath: $.data.lambdaresult
+              Catch:
+                ErrorEquals: States.ALL
+                Next: Failure
+              InputPath: $[0]
+              ResultPath: $[0].data.lambdaresult
               Type: Task
 
-            Stage 2 Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Stage 5
-                Variable: $.data.lambdaresult.success
-              - BooleanEquals: false
-                Next: Failure
-                Variable: $.data.lambdaresult.success
-              Type: Choice
-
-            Stage 5:
-              Next: Stage 5 Outcome
+            Disclosure Stage 5:
+              Next: Success
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-stage5}"
-              ResultPath: $.data.lambdaresult
-              Type: Task
-
-            Stage 5 Outcome:
-              Choices:
-              - BooleanEquals: true
-                Next: Success
-                Variable: $.data.lambdaresult.success
-              - BooleanEquals: false
+              Catch:
+                ErrorEquals: States.ALL
                 Next: Failure
-                Variable: $.data.lambdaresult.success
-              Type: Choice
+              InputPath: $[0]
+              ResultPath: $[0].data.lambdaresult
+              Type: Task
 
             Success:
               End: true
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.method-return}"
-              ResultPath: $.data.lambdaresult
+              InputPath: $[0]
+              ResultPath: $[0].data.lambdaresult
               Type: Task
 
             Failure:
               End: true
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.error-capture}"
-              ResultPath: $.data.lambdaresult
+              InputPath: $[0]
+              ResultPath: $[0].data.lambdaresult
               Type: Task
 
 plugins:

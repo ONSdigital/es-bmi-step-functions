@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-cd step-function-deploy-repository
+cd step-function-repository
 echo Destroying serverless bundle...
 serverless remove --verbose;

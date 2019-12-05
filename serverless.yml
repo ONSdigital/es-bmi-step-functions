@@ -90,8 +90,8 @@ stepFunctions:
               Next: Enrichment
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.ingest}"
               Catch:
-                ErrorEquals: States.ALL
-                Next : Failure
+                - ErrorEquals: States.ALL
+                  Next : Failure
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -99,8 +99,8 @@ stepFunctions:
               Next: Strata
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.enrichment}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -108,8 +108,8 @@ stepFunctions:
               Next: Imputation Calculate Movements
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.strata}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -117,8 +117,8 @@ stepFunctions:
               Next: Should Imputation Run
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-movements}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -136,8 +136,8 @@ stepFunctions:
               Next: Calculate IQRS
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-means}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -145,8 +145,8 @@ stepFunctions:
               Next: Calculate Atypicals
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-iqrs}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -154,8 +154,8 @@ stepFunctions:
               Next: Re-Calculate Means
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-atyps}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -163,8 +163,8 @@ stepFunctions:
               Next: Calculate Factors
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-recalc-means}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -172,8 +172,8 @@ stepFunctions:
               Next: Apply Factors
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-calc-factors}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -181,8 +181,8 @@ stepFunctions:
               Next: Aggregation
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-apply-factors}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -222,8 +222,8 @@ stepFunctions:
               Next: Disclosure Stage 1
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               ResultPath: $[0].data.lambdaresult
               OutputPath: $
               InputPath: $
@@ -233,8 +233,8 @@ stepFunctions:
               Next: Disclosure Stage 2
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-stage1}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               InputPath: $[0]
               ResultPath: $[0].data.lambdaresult
               Type: Task
@@ -243,8 +243,8 @@ stepFunctions:
               Next: Disclosure Stage 5
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-stage2}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               InputPath: $[0]
               ResultPath: $[0].data.lambdaresult
               Type: Task
@@ -253,8 +253,8 @@ stepFunctions:
               Next: Success
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-stage5}"
               Catch:
-                ErrorEquals: States.ALL
-                Next: Failure
+                - ErrorEquals: States.ALL
+                  Next: Failure
               InputPath: $[0]
               ResultPath: $[0].data.lambdaresult
               Type: Task

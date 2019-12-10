@@ -24,8 +24,7 @@ custom:
   imputation-calc-factors: ${self:custom.wranglers.imputation-calc-factors}
   imputation-apply-factors: ${self:custom.wranglers.imputation-apply-factors}
   aggregation-top2: ${self:custom.wranglers.aggregation-top2}
-  aggregation-entref: ${self:custom.wranglers.aggregation-entref}
-  aggregation-county: ${self:custom.wranglers.aggregation-county}
+  aggregation-column: ${self:custom.wranglers.aggregation-column}
   aggregation-combiner: ${self:custom.wranglers.aggregation-combiner}
   disclosure-stage1: ${self:custom.wranglers.disclosure-stage1}
   disclosure-stage2: ${self:custom.wranglers.disclosure-stage2}
@@ -62,6 +61,9 @@ stepFunctions:
                   top1_column.$: $.top1_column
                   top2_column.$: $.top2_column
                   threshold.$: $.threshold
+                  aggA.$: $.aggA
+                  period_column.$: $.period_column
+                  aggB.$: $.aggB
               Type: Pass
 
             Choice State:
@@ -201,14 +203,16 @@ stepFunctions:
                   States:
                     County Total:
                       Type: Task
-                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-county}"
+                      InputPath: $.RuntimeVariables.aggA
+                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"
                       End: true
 
                 - StartAt: EntRef Count
                   States:
                     EntRef Count:
                       Type: Task
-                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-entref}"
+                      InputPath: $.RuntimeVariables.aggB
+                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"
                       End: true
 
                 - StartAt: Calculate Top2

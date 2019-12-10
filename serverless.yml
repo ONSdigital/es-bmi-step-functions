@@ -62,6 +62,9 @@ stepFunctions:
                   top1_column.$: $.top1_column
                   top2_column.$: $.top2_column
                   threshold.$: $.threshold
+                  aggA.$: $.aggA
+                  period_column.$: $.period_column
+                  aggB.$: $.aggB
               Type: Pass
 
             Choice State:
@@ -201,6 +204,7 @@ stepFunctions:
                   States:
                     County Total:
                       Type: Task
+                      InputPath: $.RuntimeVariables.aggA
                       Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-county}"
                       End: true
 
@@ -208,6 +212,7 @@ stepFunctions:
                   States:
                     EntRef Count:
                       Type: Task
+                      InputPath: $.RuntimeVariables.aggB
                       Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-entref}"
                       End: true
 

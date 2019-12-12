@@ -219,7 +219,7 @@ stepFunctions:
                   States:
                     Calculate Top2:
                       Type: Task
-                      InputPath: $.RuntimeVariables.aggB
+                      InputPath: $.RuntimeVariables.aggA
                       Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"
                       End: true
 

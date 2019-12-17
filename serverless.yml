@@ -192,7 +192,7 @@ stepFunctions:
               Type: Parallel
               Next: Combiner
               ResultPath: $
-              OutputPath: $
+              OutputPath: $[0]
               Branches:
                 - StartAt: passRuntime
                   States:
@@ -219,6 +219,7 @@ stepFunctions:
                   States:
                     Calculate Top2:
                       Type: Task
+                      InputPath: $.RuntimeVariables.aggA
                       Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"
                       End: true
 
@@ -228,9 +229,9 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
-              ResultPath: $[0].data.lambdaresult
+              ResultPath: $.data.lambdaresult
               OutputPath: $
-              InputPath: $
+              InputPath: $.RuntimeVariables.aggB
               Type: Task
 
             Disclosure Stage 1:
@@ -239,8 +240,8 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
-              InputPath: $[0]
-              ResultPath: $[0].data.lambdaresult
+              InputPath: $
+              ResultPath: $.data.lambdaresult
               Type: Task
 
             Disclosure Stage 2:
@@ -249,8 +250,8 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
-              InputPath: $[0]
-              ResultPath: $[0].data.lambdaresult
+              InputPath: $
+              ResultPath: $.data.lambdaresult
               Type: Task
 
             Disclosure Stage 5:
@@ -259,22 +260,22 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
-              InputPath: $[0]
-              ResultPath: $[0].data.lambdaresult
+              InputPath: $
+              ResultPath: $.data.lambdaresult
               Type: Task
 
             Success:
               End: true
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.method-return}"
-              InputPath: $[0]
-              ResultPath: $[0].data.lambdaresult
+              InputPath: $
+              ResultPath: $.data.lambdaresult
               Type: Task
 
             Failure:
               End: true
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.error-capture}"
-              InputPath: $[0]
-              ResultPath: $[0].data.lambdaresult
+              InputPath: $
+              ResultPath: $.data.lambdaresult
               Type: Task
 
 plugins:

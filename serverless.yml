@@ -48,22 +48,25 @@ stepFunctions:
               Parameters:
                 MessageStructure: json
                 RuntimeVariables:
-                  checkpoint.$: $.checkpoint
-                  id.$: $.id
-                  period.$: $.period
+                  aggA.$: $.aggA
+                  aggB.$: $.aggB
                   calculation_type.$: $.calculation_type
-                  distinct_values.$: $.distinct_values
+                  cell_total_column.$: $.cell_total_column
+                  checkpoint.$: $.checkpoint
                   disclosivity_marker.$: $.disclosivity_marker
-                  publishable_indicator.$: $.publishable_indicator
+                  distinct_values.$: $.distinct_values
                   explanation.$: $.explanation
-                  total_column.$: $.total_column
+                  id.$: $.id
                   parent_column.$: $.parent_column
+                  period.$: $.period
+                  period_column.$: $.period_column
+                  publishable_indicator.$: $.publishable_indicator
+                  raw_input_file.$: $.raw_input_file
+                  sum_columns.$: $.sum_columns
+                  threshold.$: $.threshold
                   top1_column.$: $.top1_column
                   top2_column.$: $.top2_column
-                  threshold.$: $.threshold
-                  aggA.$: $.aggA
-                  period_column.$: $.period_column
-                  aggB.$: $.aggB
+                  total_column.$: $.total_column
               Type: Pass
 
             Choice State:

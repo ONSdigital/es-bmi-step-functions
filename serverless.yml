@@ -48,8 +48,9 @@ stepFunctions:
               Parameters:
                 MessageStructure: json
                 RuntimeVariables:
-                  aggA.$: $.aggA
-                  aggB.$: $.aggB
+                  additional_aggregated_column.$: $.additional_aggregated_column
+                  aggregated_column.$: $.aggregated_column
+                  aggregation_type.$: $.aggregation_type
                   calculation_type.$: $.calculation_type
                   cell_total_column.$: $.cell_total_column
                   checkpoint.$: $.checkpoint
@@ -63,6 +64,7 @@ stepFunctions:
                   publishable_indicator.$: $.publishable_indicator
                   raw_input_file.$: $.raw_input_file
                   sum_columns.$: $.sum_columns
+                  survey.$: $.survey
                   threshold.$: $.threshold
                   top1_column.$: $.top1_column
                   top2_column.$: $.top2_column
@@ -206,7 +208,14 @@ stepFunctions:
                   States:
                     County Total:
                       Type: Task
-                      InputPath: $.RuntimeVariables.aggA
+                      InputPath: $
+                      Parameters:
+                        RuntimeVariables:
+                          additional_aggregated_column.$: $.RuntimeVariables.additional_aggregated_column
+                          aggregated_column.$: $.RuntimeVariables.aggregated_column
+                          aggregation_type.$: $.RuntimeVariables.aggregation_type[0]
+                          cell_total_column.$: $.RuntimeVariables.cell_total_column[0]
+                          total_column.$: $.RuntimeVariables.total_column[0]
                       Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"
                       End: true
 
@@ -214,7 +223,14 @@ stepFunctions:
                   States:
                     EntRef Count:
                       Type: Task
-                      InputPath: $.RuntimeVariables.aggB
+                      InputPath: $
+                      Parameters:
+                        RuntimeVariables:
+                          additional_aggregated_column.$: $.RuntimeVariables.additional_aggregated_column
+                          aggregated_column.$: $.RuntimeVariables.aggregated_column
+                          aggregation_type.$: $.RuntimeVariables.aggregation_type[1]
+                          cell_total_column.$: $.RuntimeVariables.cell_total_column[1]
+                          total_column.$: $.RuntimeVariables.total_column[1]
                       Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"
                       End: true
 
@@ -222,7 +238,16 @@ stepFunctions:
                   States:
                     Calculate Top2:
                       Type: Task
-                      InputPath: $.RuntimeVariables.aggA
+                      InputPath: $
+                      Parameters:
+                        RuntimeVariables:
+                          additional_aggregated_column.$: $.RuntimeVariables.additional_aggregated_column
+                          aggregated_column.$: $.RuntimeVariables.aggregated_column
+                          aggregation_type.$: $.RuntimeVariables.aggregation_type[0]
+                          cell_total_column.$: $.RuntimeVariables.cell_total_column[0]
+                          total_column.$: $.RuntimeVariables.total_column[0]
+                          top1_column.$: $.RuntimeVariables.top1_column
+                          top2_column.$: $.RuntimeVariables.top2_column
                       Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"
                       End: true
 
@@ -234,7 +259,14 @@ stepFunctions:
                   Next: Failure
               ResultPath: $.data.lambdaresult
               OutputPath: $
-              InputPath: $.RuntimeVariables.aggB
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  additional_aggregated_column.$: $.RuntimeVariables.additional_aggregated_column
+                  aggregated_column.$: $.RuntimeVariables.aggregated_column
+                  aggregation_type.$: $.RuntimeVariables.aggregation_type[1]
+                  cell_total_column.$: $.RuntimeVariables.cell_total_column[1]
+                  total_column.$: $.RuntimeVariables.total_column[1]
               Type: Task
 
             Disclosure Stage 1:
@@ -244,6 +276,12 @@ stepFunctions:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
               InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  disclosivity_marker.$: $.RuntimeVariables.disclosivity_marker
+                  explanation.$: $.RuntimeVariables.explanation
+                  publishable_indicator.$: $.RuntimeVariables.publishable_indicator
+                  total_column.$: $.RuntimeVariables.total_column[0]
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -264,6 +302,14 @@ stepFunctions:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
               InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  disclosivity_marker.$: $.RuntimeVariables.disclosivity_marker
+                  explanation.$: $.RuntimeVariables.explanation
+                  publishable_indicator.$: $.RuntimeVariables.publishable_indicator
+                  cell_total_column.$: $.RuntimeVariables.cell_total_column[0]
+                  top1_column.$: $.RuntimeVariables.top1_column
+                  top2_column.$: $.RuntimeVariables.top2_column
               ResultPath: $.data.lambdaresult
               Type: Task
 

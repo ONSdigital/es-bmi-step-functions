@@ -69,6 +69,7 @@ stepFunctions:
                   top1_column.$: $.top1_column
                   top2_column.$: $.top2_column
                   total_column.$: $.total_column
+                  stage5_threshold.$: $.stage5_threshold
               Type: Pass
 
             Choice State:

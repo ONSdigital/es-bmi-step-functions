@@ -29,6 +29,7 @@ custom:
   disclosure-stage1: ${self:custom.wranglers.disclosure-stage1}
   disclosure-stage2: ${self:custom.wranglers.disclosure-stage2}
   disclosure-stage5: ${self:custom.wranglers.disclosure-stage5}
+  all-gb-region: ${self:custom.wranglers.all-gb-region}
   error-capture: ${self:custom.wranglers.error-capture}
   method-return: ${self:custom.wranglers.method-return}
 
@@ -70,6 +71,7 @@ stepFunctions:
                   top2_column.$: $.top2_column
                   total_column.$: $.total_column
                   stage5_threshold.$: $.stage5_threshold
+                  factors_parameters.$: $.factors_parameters
               Type: Pass
 
             Choice State:
@@ -133,12 +135,21 @@ stepFunctions:
             Should Imputation Run:
               Choices:
               - BooleanEquals: true
-                Next: Calculate Means
+                Next: Calculate All-GB Region
                 Variable: $.data.lambdaresult.impute
               - BooleanEquals: false
                 Next: Success
                 Variable: $.data.lambdaresult.impute
               Type: Choice
+
+              Calculate All-GB Region:
+                Next: Calculate Means
+                Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.all-gb-region}"
+                Catch:
+                  - ErrorEquals: [States.ALL]
+                    Next: Failure
+                ResultPath: $.data.lambdaresult
+                Type: Task
 
             Calculate Means:
               Next: Calculate IQRS

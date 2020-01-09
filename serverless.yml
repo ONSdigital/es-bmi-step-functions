@@ -48,10 +48,10 @@ stepFunctions:
               Parameters:
                 MessageStructure: json
                 RuntimeVariables:
-                  factors_parameters.$: $.factors_parameters,
+                  factors_parameters.$: $.factors_parameters
                   aggA.$: $.aggA
                   aggB.$: $.aggB
-                  movement_type.$: $.movement_type,
+                  movement_type.$: $.movement_type
                   cell_total_column.$: $.cell_total_column
                   checkpoint.$: $.checkpoint
                   disclosivity_marker.$: $.disclosivity_marker

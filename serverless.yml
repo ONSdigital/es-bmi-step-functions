@@ -70,6 +70,7 @@ stepFunctions:
                   top2_column.$: $.top2_column
                   total_column.$: $.total_column
                   stage5_threshold.$: $.stage5_threshold
+                  survey_column.$: $.survey_column
                   factors_parameters.$: $.factors_parameters
               Type: Pass
 

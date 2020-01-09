@@ -60,6 +60,7 @@ stepFunctions:
                   id.$: $.id
                   parent_column.$: $.parent_column
                   period.$: $.period
+                  periodicity.$: $.periodicity
                   period_column.$: $.period_column
                   publishable_indicator.$: $.publishable_indicator
                   raw_input_file.$: $.raw_input_file

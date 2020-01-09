@@ -49,7 +49,6 @@ stepFunctions:
               Parameters:
                 MessageStructure: json
                 RuntimeVariables:
-                  factors_parameters.$: $.factors_parameters
                   aggA.$: $.aggA
                   aggB.$: $.aggB
                   movement_type.$: $.movement_type

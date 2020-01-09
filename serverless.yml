@@ -141,14 +141,14 @@ stepFunctions:
                 Variable: $.data.lambdaresult.impute
               Type: Choice
 
-              Calculate All-GB Region:
-                Next: Calculate Means
-                Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.all-gb-region}"
-                Catch:
-                  - ErrorEquals: [States.ALL]
-                    Next: Failure
-                ResultPath: $.data.lambdaresult
-                Type: Task
+            Calculate All-GB Region:
+              Next: Calculate Means
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.all-gb-region}"
+              Catch:
+                - ErrorEquals: [States.ALL]
+                  Next: Failure
+              ResultPath: $.data.lambdaresult
+              Type: Task
 
             Calculate Means:
               Next: Calculate IQRS

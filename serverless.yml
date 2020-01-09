@@ -50,6 +50,7 @@ stepFunctions:
                 RuntimeVariables:
                   factors_parameters.$: $.factors_parameters
                   aggA.$: $.aggA
+                  periodicity.$: $.periodicity
                   aggB.$: $.aggB
                   movement_type.$: $.movement_type
                   cell_total_column.$: $.cell_total_column

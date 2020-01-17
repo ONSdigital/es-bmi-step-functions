@@ -26,7 +26,7 @@ custom:
   aggregation-top2: ${self:custom.wranglers.aggregation-top2}
   aggregation-column: ${self:custom.wranglers.aggregation-column}
   aggregation-combiner: ${self:custom.wranglers.aggregation-combiner}
-  disclosure-wrangler: ${self.custom.wrangler.disclosure-wrangler}
+  disclosure-wrangler: ${self.custom.wranglers.disclosure-wrangler}
   all-gb-region: ${self:custom.wranglers.all-gb-region}
   error-capture: ${self:custom.wranglers.error-capture}
   method-return: ${self:custom.wranglers.method-return}

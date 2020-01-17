@@ -247,7 +247,6 @@ stepFunctions:
                   Next: Failure
               ResultPath: $.data.lambdaresult
               OutputPath: $
-              InputPath: $.RuntimeVariables.aggB
               Type: Task
 
             Success:

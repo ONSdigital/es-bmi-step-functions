@@ -47,6 +47,7 @@ stepFunctions:
               Parameters:
                 MessageStructure: json
                 RuntimeVariables:
+                  lookups.$: $.lookups
                   aggA.$: $.aggA
                   aggB.$: $.aggB
                   movement_type.$: $.movement_type
@@ -206,7 +207,7 @@ stepFunctions:
 
             Aggregation:
               Type: Parallel
-              Next: Disclosure
+              Next: Combiner
               ResultPath: $
               OutputPath: $[0]
               Branches:
@@ -238,6 +239,16 @@ stepFunctions:
                       InputPath: $.RuntimeVariables.aggA
                       Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"
                       End: true
+
+            Combiner:
+              Next: Disclosure
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"
+              Catch:
+                - ErrorEquals: [States.ALL]
+                  Next: Failure
+              ResultPath: $.data.lambdaresult
+              OutputPath: $
+              Type: Task
 
             Disclosure:
               Next: Success

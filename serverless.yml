@@ -47,6 +47,7 @@ stepFunctions:
               Parameters:
                 MessageStructure: json
                 RuntimeVariables:
+                  lookups.$: $.lookups
                   aggA.$: $.aggA
                   aggB.$: $.aggB
                   movement_type.$: $.movement_type

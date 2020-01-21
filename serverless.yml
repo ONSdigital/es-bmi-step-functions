@@ -246,6 +246,7 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
+              InputPath: $.RuntimeVariables.aggA
               ResultPath: $.data.lambdaresult
               OutputPath: $
               Type: Task

@@ -56,7 +56,7 @@ stepFunctions:
                   disclosivity_marker.$: $.disclosivity_marker
                   distinct_values.$: $.distinct_values
                   explanation.$: $.explanation
-                  id.$: $.id
+                  run_id.$: $.run_id
                   parent_column.$: $.parent_column
                   period.$: $.period
                   periodicity.$: $.periodicity

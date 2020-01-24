@@ -34,7 +34,7 @@ custom:
 stepFunctions:
   stateMachines:
     ES-BMISG-Results:
-        name: ES-BMISG-Results
+        name: ES-BMISG-Results-lu4987
         tags:
             app: results
         definition:

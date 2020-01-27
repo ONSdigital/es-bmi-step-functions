@@ -6,7 +6,7 @@ provider:
   package:
     individually: true
   deploymentBucket:
-    name: com.serverless.eu-west-2.results.ons.deploys
+    name: com.serverless.${self:provider.region}.results.ons.deploys
 
 custom:
   accounts: ${ssm:/aws/reference/secretsmanager/results-aws-accounts~true}

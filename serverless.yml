@@ -105,7 +105,7 @@ stepFunctions:
                 - ErrorEquals: [States.ALL]
                   Next : Failure
               Parameters:
-                RunetimeVariables:
+                RuntimeVariables:
                   run_id.$: $.run_id
               ResultPath: $.data.lambdaresult
               Type: Task

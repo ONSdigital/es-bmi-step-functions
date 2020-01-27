@@ -6,7 +6,7 @@ provider:
   package:
     individually: true
   deploymentBucket:
-    name: com.serverless.${self:provider.region}.results.ons.deploys
+    name: com.serverless.eu-west-2.results.ons.deploys
 
 custom:
   accounts: ${ssm:/aws/reference/secretsmanager/results-aws-accounts~true}
@@ -38,40 +38,42 @@ stepFunctions:
         tags:
             app: results
         definition:
-          Comment: Calls the lambdas required to run the BMI Sand and Gravel Survey
+          Comment: Calls the lambdas required to run the BMI Sand and Gravel Survey.
           StartAt: Inputs
           States:
 
             Inputs:
               Next: Choice State
               Parameters:
-                MessageStructure: json
                 RuntimeVariables:
-                  lookups.$: $.lookups
-                  aggA.$: $.aggA
-                  aggB.$: $.aggB
-                  movement_type.$: $.movement_type
-                  cell_total_column.$: $.cell_total_column
                   checkpoint.$: $.checkpoint
-                  disclosivity_marker.$: $.disclosivity_marker
-                  distinct_values.$: $.distinct_values
-                  explanation.$: $.explanation
-                  id.$: $.id
-                  parent_column.$: $.parent_column
-                  period.$: $.period
-                  periodicity.$: $.periodicity
-                  period_column.$: $.period_column
-                  publishable_indicator.$: $.publishable_indicator
-                  raw_input_file.$: $.raw_input_file
-                  sum_columns.$: $.sum_columns
-                  threshold.$: $.threshold
-                  top1_column.$: $.top1_column
-                  top2_column.$: $.top2_column
-                  total_column.$: $.total_column
-                  stage5_threshold.$: $.stage5_threshold
-                  disclosure_stages.$: $.disclosure_stages
-                  survey_column.$: $.survey_column
-                  factors_parameters.$: $.factors_parameters
+                MessageStructure: json
+                lookups.$: $.lookups
+                additional_aggregated_column.$: $.additional_aggregated_column
+                aggregated_column.$: $.aggregated_column
+                aggregation_type.$: $.aggregation_type
+                movement_type.$: $.movement_type
+                cell_total_column.$: $.cell_total_column
+                disclosivity_marker.$: $.disclosivity_marker
+                distinct_values.$: $.distinct_values
+                explanation.$: $.explanation
+                run_id.$: $.run_id
+                parent_column.$: $.parent_column
+                period.$: $.period
+                periodicity.$: $.periodicity
+                period_column.$: $.period_column
+                publishable_indicator.$: $.publishable_indicator
+                raw_input_file.$: $.raw_input_file
+                sum_columns.$: $.sum_columns
+                survey.$: $.survey
+                threshold.$: $.threshold
+                top1_column.$: $.top1_column
+                top2_column.$: $.top2_column
+                total_column.$: $.total_column
+                stage5_threshold.$: $.stage5_threshold
+                disclosure_stages.$: $.disclosure_stages
+                survey_column.$: $.survey_column
+                factors_parameters.$: $.factors_parameters
               Type: Pass
 
             Choice State:
@@ -102,6 +104,9 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next : Failure
+              Parameters:
+                RunetimeVariables:
+                  run_id.$: $.run_id
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -111,6 +116,12 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  lookups.$: $.lookups
+                  survey_column.$: $.survey_column
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -120,6 +131,13 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  survey_column.$: $.survey_column
+                  distinct_values.$: $.distinct_values
+                  period.$: $.period
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -129,6 +147,14 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  movement_type.$: $.movement_type
+                  period.$: $.period
+                  periodicity.$: $.periodicity
+                  period_column.$: $.period_column
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -148,6 +174,11 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  factors_parameters.$: $.factors_parameters
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -157,6 +188,11 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  distinct_values.$: $.distinct_values
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -166,6 +202,11 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  distinct_values.$: $.distinct_values
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -175,6 +216,9 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -184,6 +228,11 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  distinct_values.$: $.distinct_values
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -193,6 +242,13 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  distinct_values.$: $.distinct_values
+                  period_column.$: $.period_column
+                  factors_parameters.$: $.factors_parameters
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -202,6 +258,15 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  distinct_values.$: $.distinct_values
+                  sum_columns.$: $.sum_columns
+                  period_column.$: $.period_column
+                  factors_parameters.$: $.factors_parameters
+                  raw_input_file.$: $.raw_input_file
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -216,11 +281,20 @@ stepFunctions:
                     passRuntime:
                       Type: Pass
                       End: true
+
                 - StartAt: County Total
                   States:
                     County Total:
                       Type: Task
-                      InputPath: $.RuntimeVariables.aggA
+                      InputPath: $
+                      Parameters:
+                        RuntimeVariables:
+                          run_id.$: $.run_id
+                          aggregation_type.$: $.aggregation_type[0]
+                          aggregated_column.$: $.aggregated_column
+                          cell_total_column.$: $.cell_total_column[0]
+                          total_column.$: $.total_column[0]
+                          additional_aggregated_column.$: $.additional_aggregated_column
                       Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"
                       End: true
 
@@ -228,7 +302,15 @@ stepFunctions:
                   States:
                     EntRef Count:
                       Type: Task
-                      InputPath: $.RuntimeVariables.aggB
+                      InputPath: $
+                      Parameters:
+                        RuntimeVariables:
+                          run_id.$: $.run_id
+                          aggregation_type.$: $.aggregation_type[1]
+                          aggregated_column.$: $.aggregated_column
+                          cell_total_column.$: $.cell_total_column[1]
+                          total_column.$: $.total_column[1]
+                          additional_aggregated_column.$: $.additional_aggregated_column
                       Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"
                       End: true
 
@@ -236,7 +318,15 @@ stepFunctions:
                   States:
                     Calculate Top2:
                       Type: Task
-                      InputPath: $.RuntimeVariables.aggA
+                      InputPath: $
+                      Parameters:
+                        RuntimeVariables:
+                          run_id.$: $.run_id
+                          aggregated_column.$: $.aggregated_column
+                          additional_aggregated_column.$: $.additional_aggregated_column
+                          top1_column.$: $.top1_column
+                          top2_column.$: $.top2_column
+                          total_column.$: $.total_column[0]
                       Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"
                       End: true
 
@@ -248,6 +338,12 @@ stepFunctions:
                   Next: Failure
               ResultPath: $.data.lambdaresult
               OutputPath: $
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  aggregated_column.$: $.aggregated_column
+                  additional_aggregated_column.$: $.additional_aggregated_column
               Type: Task
 
             Disclosure:
@@ -256,8 +352,22 @@ stepFunctions:
               Catch:
                 - ErrorEquals: [States.ALL]
                   Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  disclosivity_marker.$: $.disclosivity_marker
+                  publishable_indicator.$: $.publishable_indicator
+                  explanation.$: $.explanation
+                  total_column.$: $.total_column[0]
+                  parent_column.$: $.parent_column
+                  threshold.$: $.threshold
+                  cell_total_column.$: $.cell_total_column[0]
+                  top1_column.$: $.top1_column
+                  top2_column.$: $.top2_column
+                  stage5_threshold.$: $.stage5_threshold
+                  disclosure_stages.$: $.disclosure_stages
               ResultPath: $.data.lambdaresult
-              OutputPath: $
               Type: Task
 
             Success:

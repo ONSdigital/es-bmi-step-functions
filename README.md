@@ -40,3 +40,13 @@ accountId: ${self:custom.accounts.account-id}
 _Example of referencing the variable in-line inside Serverless.sh._
 
 ```Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"```
+
+## RuntimeVariables:
+The runtime variables are configured via the config-loader, more information can be found
+on it's git repository. 
+
+The step functions handles which variables are used in each section
+while section and also the way in which the variables are picked up from the respective payload.
+
+The implementation used inside of the step function can be found at: 
+https://collaborate2.ons.gov.uk/confluence/display/ESD/Spike+-+Step+Function%3A+InputPath+and+Parameters

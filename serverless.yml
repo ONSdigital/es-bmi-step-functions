@@ -124,6 +124,7 @@ stepFunctions:
                   run_id.$: $.run_id
                   lookups.$: $.lookups
                   survey_column.$: $.survey_column
+                  queue_url.$: $.queue_url
               ResultPath: $.data.lambdaresult
               Type: Task
 

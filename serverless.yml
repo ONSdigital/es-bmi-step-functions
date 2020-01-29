@@ -375,6 +375,7 @@ stepFunctions:
                   publishable_indicator.$: $.publishable_indicator
                   explanation.$: $.explanation
                   total_column.$: $.total_column[0]
+                  second_total_column.$: $.total_column[1]
                   parent_column.$: $.parent_column
                   threshold.$: $.threshold
                   cell_total_column.$: $.cell_total_column[0]

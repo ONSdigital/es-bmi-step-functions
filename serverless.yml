@@ -324,7 +324,7 @@ stepFunctions:
                     Parameters:
                       RuntimeVariables:
                         run_id.$: $.run_id
-                        aggregation_type.$: $.aggregation_type[0]
+                        aggregation_type.$: $.aggregation_type[1]
                         aggregated_column.$: $.aggregated_column
                         cell_total_column.$: $.cell_total_column[0]
                         total_column.$: $.total_column[1]
@@ -341,7 +341,7 @@ stepFunctions:
                     Parameters:
                       RuntimeVariables:
                         run_id.$: $.run_id
-                        aggregation_type.$: $.aggregation_type[1]
+                        aggregation_type.$: $.aggregation_type[0]
                         aggregated_column.$: $.aggregated_column
                         cell_total_column.$: $.cell_total_column[1]
                         total_column.$: $.total_column[0]

@@ -1,5 +1,5 @@
 ---
-service: bmi-results-sg
+service: bmi-results-sg-LU4987
 provider:
   name: aws
   runtime: python3.7
@@ -35,48 +35,48 @@ custom:
 stepFunctions:
   stateMachines:
     ES-BMISG-Results:
-      name: ES-BMISG-Results
+      name: ES-BMISG-Results-LU4987
       tags:
         app: results
       definition:
         Comment: Calls the lambdas required to run the BMI Sand and Gravel Survey.
         StartAt: Inputs
         States:
-            Inputs:
-              Next: Choice State
-              Parameters:
-                RuntimeVariables:
-                  checkpoint.$: $.checkpoint
-                MessageStructure: json
-                lookups.$: $.lookups
-                additional_aggregated_column.$: $.additional_aggregated_column
-                aggregated_column.$: $.aggregated_column
-                aggregation_type.$: $.aggregation_type
-                movement_type.$: $.movement_type
-                cell_total_column.$: $.cell_total_column
-                disclosivity_marker.$: $.disclosivity_marker
-                distinct_values.$: $.distinct_values
-                explanation.$: $.explanation
-                run_id.$: $.run_id
-                parent_column.$: $.parent_column
-                period.$: $.period
-                periodicity.$: $.periodicity
-                period_column.$: $.period_column
-                publishable_indicator.$: $.publishable_indicator
-                queue_url.$: $.queue_url
-                questions_list.$: $.questions_list
-                raw_input_file.$: $.raw_input_file
-                sum_columns.$: $.sum_columns
-                survey.$: $.survey
-                threshold.$: $.threshold
-                top1_column.$: $.top1_column
-                top2_column.$: $.top2_column
-                total_column.$: $.total_column
-                stage5_threshold.$: $.stage5_threshold
-                disclosure_stages.$: $.disclosure_stages
-                survey_column.$: $.survey_column
-                factors_parameters.$: $.factors_parameters
-              Type: Pass
+          Inputs:
+            Next: Choice State
+            Parameters:
+              RuntimeVariables:
+                checkpoint.$: $.checkpoint
+              MessageStructure: json
+              lookups.$: $.lookups
+              additional_aggregated_column.$: $.additional_aggregated_column
+              aggregated_column.$: $.aggregated_column
+              aggregation_type.$: $.aggregation_type
+              movement_type.$: $.movement_type
+              cell_total_column.$: $.cell_total_column
+              disclosivity_marker.$: $.disclosivity_marker
+              distinct_values.$: $.distinct_values
+              explanation.$: $.explanation
+              run_id.$: $.run_id
+              parent_column.$: $.parent_column
+              period.$: $.period
+              periodicity.$: $.periodicity
+              period_column.$: $.period_column
+              publishable_indicator.$: $.publishable_indicator
+              queue_url.$: $.queue_url
+              questions_list.$: $.questions_list
+              raw_input_file.$: $.raw_input_file
+              sum_columns.$: $.sum_columns
+              survey.$: $.survey
+              threshold.$: $.threshold
+              top1_column.$: $.top1_column
+              top2_column.$: $.top2_column
+              total_column.$: $.total_column
+              stage5_threshold.$: $.stage5_threshold
+              disclosure_stages.$: $.disclosure_stages
+              survey_column.$: $.survey_column
+              factors_parameters.$: $.factors_parameters
+            Type: Pass
 
           Choice State:
             Choices:
@@ -116,8 +116,9 @@ stepFunctions:
 
             Enrichment:
               Next: Strata
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.enrichment}"
-              Catch: 
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                function:${self:custom.enrichment}"
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure
@@ -133,8 +134,9 @@ stepFunctions:
 
             Strata:
               Next: Imputation Calculate Movements
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.strata}"
-              Catch: 
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                function:${self:custom.strata}"
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure
@@ -151,8 +153,9 @@ stepFunctions:
 
             Imputation Calculate Movements:
               Next: Should Imputation Run
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-movements}"
-              Catch: 
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                function:${self:custom.imputation-movements}"
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure
@@ -181,8 +184,9 @@ stepFunctions:
 
             Calculate All-GB Region:
               Next: Calculate Means
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.all-gb-region}"
-              Catch: 
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                function:${self:custom.all-gb-region}"
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure
@@ -197,8 +201,9 @@ stepFunctions:
 
             Calculate Means:
               Next: Calculate IQRS
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-means}"
-              Catch: 
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                function:${self:custom.imputation-means}"
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure
@@ -214,8 +219,9 @@ stepFunctions:
 
             Calculate IQRS:
               Next: Calculate Atypicals
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-iqrs}"
-              Catch: 
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                function:${self:custom.imputation-iqrs}"
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure
@@ -231,8 +237,9 @@ stepFunctions:
 
             Calculate Atypicals:
               Next: Re-Calculate Means
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-atyps}"
-              Catch: 
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                function:${self:custom.imputation-atyps}"
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure
@@ -246,8 +253,9 @@ stepFunctions:
 
             Re-Calculate Means:
               Next: Calculate Factors
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-recalc-means}"
-              Catch: 
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                function:${self:custom.imputation-recalc-means}"
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure
@@ -263,8 +271,9 @@ stepFunctions:
 
             Calculate Factors:
               Next: Apply Factors
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-calc-factors}"
-              Catch: 
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                function:${self:custom.imputation-calc-factors}"
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure
@@ -282,8 +291,9 @@ stepFunctions:
 
             Apply Factors:
               Next: Aggregation
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-apply-factors}"
-              Catch: 
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                function:${self:custom.imputation-apply-factors}"
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure
@@ -306,7 +316,7 @@ stepFunctions:
               Next: Combiner
               ResultPath: $
               OutputPath: $[0]
-              Catch: 
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure
@@ -317,23 +327,23 @@ stepFunctions:
                       Type: Pass
                       End: true
 
-              - StartAt: County Total
-                States:
-                  County Total:
-                    Type: Task
-                    InputPath: $
-                    Parameters:
-                      RuntimeVariables:
-                        run_id.$: $.run_id
-                        aggregation_type.$: $.aggregation_type[0]
-                        aggregated_column.$: $.aggregated_column
-                        cell_total_column.$: $.cell_total_column[0]
-                        total_column.$: $.total_column[0]
-                        additional_aggregated_column.$: $.additional_aggregated_column
-                        queue_url.$: $.queue_url
-                    Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-                      function:${self:custom.aggregation-column}"
-                    End: true
+                - StartAt: County Total
+                  States:
+                    County Total:
+                      Type: Task
+                      InputPath: $
+                      Parameters:
+                        RuntimeVariables:
+                          run_id.$: $.run_id
+                          aggregation_type.$: $.aggregation_type[0]
+                          aggregated_column.$: $.aggregated_column
+                          cell_total_column.$: $.cell_total_column[0]
+                          total_column.$: $.total_column[0]
+                          additional_aggregated_column.$: $.additional_aggregated_column
+                          queue_url.$: $.queue_url
+                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                        function:${self:custom.aggregation-column}"
+                      End: true
 
                 - StartAt: EntRef Count
                   States:
@@ -349,7 +359,8 @@ stepFunctions:
                           total_column.$: $.total_column[0]
                           additional_aggregated_column.$: $.additional_aggregated_column
                           queue_url.$: $.queue_url
-                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"
+                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                        function:${self:custom.aggregation-column}"
                       End: true
 
                 - StartAt: Calculate Top2
@@ -366,13 +377,15 @@ stepFunctions:
                           top2_column.$: $.top2_column
                           total_column.$: $.total_column[1]
                           queue_url.$: $.queue_url
-                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"
+                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                        function:${self:custom.aggregation-top2}"
                       End: true
 
             Combiner:
               Next: Disclosure
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"
-              Catch: 
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                function:${self:custom.aggregation-combiner}"
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure
@@ -389,8 +402,9 @@ stepFunctions:
 
             Disclosure:
               Next: Success
-              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-wrangler}"
-              Catch: 
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                function:${self:custom.disclosure-wrangler}"
+              Catch:
                 - ErrorEquals: [States.ALL]
                   ResultPath: $.error
                   Next: Failure

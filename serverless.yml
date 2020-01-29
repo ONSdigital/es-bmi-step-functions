@@ -1,5 +1,5 @@
 ---
-service: bmi-results-sg-LU4987
+service: bmi-results-sg
 provider:
   name: aws
   runtime: python3.7
@@ -35,7 +35,7 @@ custom:
 stepFunctions:
   stateMachines:
     ES-BMISG-Results:
-      name: ES-BMISG-Results-LU4987
+      name: ES-BMISG-Results
       tags:
         app: results
       definition:

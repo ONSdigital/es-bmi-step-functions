@@ -64,6 +64,7 @@ stepFunctions:
                 period_column.$: $.period_column
                 publishable_indicator.$: $.publishable_indicator
                 queue_url.$: $.queue_url
+                questions_list.$: $.questions_list
                 raw_input_file.$: $.raw_input_file
                 sum_columns.$: $.sum_columns
                 survey.$: $.survey

@@ -102,8 +102,7 @@ stepFunctions:
 
           Ingest:
             Next: Enrichment
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.ingest}"
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.ingest}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 Next: Failure
@@ -116,8 +115,7 @@ stepFunctions:
 
           Enrichment:
             Next: Strata
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.enrichment}"
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.enrichment}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -134,8 +132,7 @@ stepFunctions:
 
           Strata:
             Next: Imputation Calculate Movements
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.strata}"
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.strata}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -153,8 +150,7 @@ stepFunctions:
 
           Imputation Calculate Movements:
             Next: Should Imputation Run
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-movements}"
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-movements}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -184,8 +180,7 @@ stepFunctions:
 
           Calculate All-GB Region:
             Next: Calculate Means
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.all-gb-region}"
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.all-gb-region}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -201,8 +196,7 @@ stepFunctions:
 
           Calculate Means:
             Next: Calculate IQRS
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-means}"
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-means}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -219,8 +213,7 @@ stepFunctions:
 
           Calculate IQRS:
             Next: Calculate Atypicals
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-iqrs}"
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-iqrs}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -237,8 +230,7 @@ stepFunctions:
 
           Calculate Atypicals:
             Next: Re-Calculate Means
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-atyps}"
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-atyps}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -253,8 +245,7 @@ stepFunctions:
 
           Re-Calculate Means:
             Next: Calculate Factors
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-recalc-means}"
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-recalc-means}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -271,8 +262,7 @@ stepFunctions:
 
           Calculate Factors:
             Next: Apply Factors
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-calc-factors}"
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-calc-factors}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -291,8 +281,7 @@ stepFunctions:
 
           Apply Factors:
             Next: Aggregation
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-apply-factors}"
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-apply-factors}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -341,9 +330,7 @@ stepFunctions:
                         total_column.$: $.total_column[0]
                         additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
-                    Resource: |+
-                      arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-                      function:${self:custom.aggregation-column}
+                    Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
               - StartAt: EntRef Count
@@ -360,9 +347,7 @@ stepFunctions:
                         total_column.$: $.total_column[0]
                         additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
-                    Resource: |-
-                      arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-                      function:${self:custom.aggregation-column}
+                    Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
               - StartAt: Calculate Top2
@@ -379,16 +364,12 @@ stepFunctions:
                         top2_column.$: $.top2_column
                         total_column.$: $.total_column[1]
                         queue_url.$: $.queue_url
-                    Resource: >-
-                      arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-                      function:${self:custom.aggregation-top2}
+                    Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"  # yamllint disable-line rule:line-length
                     End: true
 
           Combiner:
             Next: Disclosure
-            Resource: >-
-              arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.aggregation-combiner}
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -406,9 +387,7 @@ stepFunctions:
 
           Disclosure:
             Next: Success
-            Resource: 
-              'arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.disclosure-wrangler}'
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-wrangler}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -434,18 +413,14 @@ stepFunctions:
 
           Success:
             End: true
-            Resource: >-
-              arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.method-return}
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.method-return}"  # yamllint disable-line rule:line-length
             InputPath: $
             ResultPath: $.data.lambdaresult
             Type: Task
 
           Failure:
             End: true
-            Resource: |-
-              arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.error-capture}
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.error-capture}"  # yamllint disable-line rule:line-length
             InputPath: $
             ResultPath: $.data.lambdaresult
             Type: Task

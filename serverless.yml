@@ -64,6 +64,7 @@ stepFunctions:
                 period_column.$: $.period_column
                 publishable_indicator.$: $.publishable_indicator
                 queue_url.$: $.queue_url
+                questions_list.$: $.questions_list
                 raw_input_file.$: $.raw_input_file
                 sum_columns.$: $.sum_columns
                 survey.$: $.survey
@@ -163,6 +164,7 @@ stepFunctions:
                   periodicity.$: $.periodicity
                   period_column.$: $.period_column
                   queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -205,6 +207,7 @@ stepFunctions:
                   run_id.$: $.run_id
                   distinct_values.$: $.distinct_values
                   queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -221,6 +224,7 @@ stepFunctions:
                   run_id.$: $.run_id
                   distinct_values.$: $.distinct_values
                   queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -235,6 +239,7 @@ stepFunctions:
                 RuntimeVariables:
                   run_id.$: $.run_id
                   queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -251,6 +256,7 @@ stepFunctions:
                   run_id.$: $.run_id
                   distinct_values.$: $.distinct_values
                   queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -269,6 +275,7 @@ stepFunctions:
                   period_column.$: $.period_column
                   factors_parameters.$: $.factors_parameters
                   queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
               ResultPath: $.data.lambdaresult
               Type: Task
 
@@ -289,6 +296,7 @@ stepFunctions:
                   factors_parameters.$: $.factors_parameters
                   raw_input_file.$: $.raw_input_file
                   queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
               ResultPath: $.data.lambdaresult
               Type: Task
 

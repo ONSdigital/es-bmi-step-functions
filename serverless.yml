@@ -42,41 +42,41 @@ stepFunctions:
         Comment: Calls the lambdas required to run the BMI Sand and Gravel Survey.
         StartAt: Inputs
         States:
-
-          Inputs:
-            Next: Choice State
-            Parameters:
-              RuntimeVariables:
-                checkpoint.$: $.checkpoint
-              MessageStructure: json
-              lookups.$: $.lookups
-              additional_aggregated_column.$: $.additional_aggregated_column
-              aggregated_column.$: $.aggregated_column
-              aggregation_type.$: $.aggregation_type
-              movement_type.$: $.movement_type
-              cell_total_column.$: $.cell_total_column
-              disclosivity_marker.$: $.disclosivity_marker
-              distinct_values.$: $.distinct_values
-              explanation.$: $.explanation
-              run_id.$: $.run_id
-              parent_column.$: $.parent_column
-              period.$: $.period
-              periodicity.$: $.periodicity
-              period_column.$: $.period_column
-              publishable_indicator.$: $.publishable_indicator
-              queue_url.$: $.queue_url
-              raw_input_file.$: $.raw_input_file
-              sum_columns.$: $.sum_columns
-              survey.$: $.survey
-              threshold.$: $.threshold
-              top1_column.$: $.top1_column
-              top2_column.$: $.top2_column
-              total_column.$: $.total_column
-              stage5_threshold.$: $.stage5_threshold
-              disclosure_stages.$: $.disclosure_stages
-              survey_column.$: $.survey_column
-              factors_parameters.$: $.factors_parameters
-            Type: Pass
+            Inputs:
+              Next: Choice State
+              Parameters:
+                RuntimeVariables:
+                  checkpoint.$: $.checkpoint
+                MessageStructure: json
+                lookups.$: $.lookups
+                additional_aggregated_column.$: $.additional_aggregated_column
+                aggregated_column.$: $.aggregated_column
+                aggregation_type.$: $.aggregation_type
+                movement_type.$: $.movement_type
+                cell_total_column.$: $.cell_total_column
+                disclosivity_marker.$: $.disclosivity_marker
+                distinct_values.$: $.distinct_values
+                explanation.$: $.explanation
+                run_id.$: $.run_id
+                parent_column.$: $.parent_column
+                period.$: $.period
+                periodicity.$: $.periodicity
+                period_column.$: $.period_column
+                publishable_indicator.$: $.publishable_indicator
+                queue_url.$: $.queue_url
+                questions_list.$: $.questions_list
+                raw_input_file.$: $.raw_input_file
+                sum_columns.$: $.sum_columns
+                survey.$: $.survey
+                threshold.$: $.threshold
+                top1_column.$: $.top1_column
+                top2_column.$: $.top2_column
+                total_column.$: $.total_column
+                stage5_threshold.$: $.stage5_threshold
+                disclosure_stages.$: $.disclosure_stages
+                survey_column.$: $.survey_column
+                factors_parameters.$: $.factors_parameters
+              Type: Pass
 
           Choice State:
             Choices:
@@ -114,58 +114,60 @@ stepFunctions:
             ResultPath: $.data.lambdaresult
             Type: Task
 
-          Enrichment:
-            Next: Strata
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.enrichment}"
-            Catch:
-              - ErrorEquals: [States.ALL]
-                Next: Failure
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                lookups.$: $.lookups
-                survey_column.$: $.survey_column
-            ResultPath: $.data.lambdaresult
-            Type: Task
+            Enrichment:
+              Next: Strata
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.enrichment}"
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  lookups.$: $.lookups
+                  survey_column.$: $.survey_column
+                  queue_url.$: $.queue_url
+              ResultPath: $.data.lambdaresult
+              Type: Task
 
-          Strata:
-            Next: Imputation Calculate Movements
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.strata}"
-            Catch:
-              - ErrorEquals: [States.ALL]
-                Next: Failure
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                survey_column.$: $.survey_column
-                distinct_values.$: $.distinct_values
-                period.$: $.period
-                queue_url.$: $.queue_url
-            ResultPath: $.data.lambdaresult
-            Type: Task
+            Strata:
+              Next: Imputation Calculate Movements
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.strata}"
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  survey_column.$: $.survey_column
+                  distinct_values.$: $.distinct_values
+                  period.$: $.period
+                  queue_url.$: $.queue_url
+              ResultPath: $.data.lambdaresult
+              Type: Task
 
-          Imputation Calculate Movements:
-            Next: Should Imputation Run
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-movements}"
-            Catch:
-              - ErrorEquals: [States.ALL]
-                Next: Failure
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                movement_type.$: $.movement_type
-                period.$: $.period
-                periodicity.$: $.periodicity
-                period_column.$: $.period_column
-                queue_url.$: $.queue_url
-            ResultPath: $.data.lambdaresult
-            Type: Task
+            Imputation Calculate Movements:
+              Next: Should Imputation Run
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-movements}"
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  movement_type.$: $.movement_type
+                  period.$: $.period
+                  periodicity.$: $.periodicity
+                  period_column.$: $.period_column
+                  queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
+              ResultPath: $.data.lambdaresult
+              Type: Task
 
           Should Imputation Run:
             Choices:
@@ -177,133 +179,143 @@ stepFunctions:
                 Variable: $.data.lambdaresult.impute
             Type: Choice
 
-          Calculate All-GB Region:
-            Next: Calculate Means
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.all-gb-region}"
-            Catch:
-              - ErrorEquals: [States.ALL]
-                Next: Failure
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                factors_parameters.$: $.factors_parameters
-                queue_url.$: $.queue_url
-            ResultPath: $.data.lambdaresult
-            Type: Task
+            Calculate All-GB Region:
+              Next: Calculate Means
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.all-gb-region}"
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  factors_parameters.$: $.factors_parameters
+                  queue_url.$: $.queue_url
+              ResultPath: $.data.lambdaresult
+              Type: Task
 
-          Calculate Means:
-            Next: Calculate IQRS
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-means}"
-            Catch:
-              - ErrorEquals: [States.ALL]
-                Next: Failure
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                distinct_values.$: $.distinct_values
-                queue_url.$: $.queue_url
-            ResultPath: $.data.lambdaresult
-            Type: Task
+            Calculate Means:
+              Next: Calculate IQRS
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-means}"
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  distinct_values.$: $.distinct_values
+                  queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
+              ResultPath: $.data.lambdaresult
+              Type: Task
 
-          Calculate IQRS:
-            Next: Calculate Atypicals
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-iqrs}"
-            Catch:
-              - ErrorEquals: [States.ALL]
-                Next: Failure
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                distinct_values.$: $.distinct_values
-                queue_url.$: $.queue_url
-            ResultPath: $.data.lambdaresult
-            Type: Task
+            Calculate IQRS:
+              Next: Calculate Atypicals
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-iqrs}"
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  distinct_values.$: $.distinct_values
+                  queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
+              ResultPath: $.data.lambdaresult
+              Type: Task
 
-          Calculate Atypicals:
-            Next: Re-Calculate Means
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-atyps}"
-            Catch:
-              - ErrorEquals: [States.ALL]
-                Next: Failure
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                queue_url.$: $.queue_url
-            ResultPath: $.data.lambdaresult
-            Type: Task
+            Calculate Atypicals:
+              Next: Re-Calculate Means
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-atyps}"
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
+              ResultPath: $.data.lambdaresult
+              Type: Task
 
-          Re-Calculate Means:
-            Next: Calculate Factors
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-recalc-means}"
-            Catch:
-              - ErrorEquals: [States.ALL]
-                Next: Failure
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                distinct_values.$: $.distinct_values
-                queue_url.$: $.queue_url
-            ResultPath: $.data.lambdaresult
-            Type: Task
+            Re-Calculate Means:
+              Next: Calculate Factors
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-recalc-means}"
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  distinct_values.$: $.distinct_values
+                  queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
+              ResultPath: $.data.lambdaresult
+              Type: Task
 
-          Calculate Factors:
-            Next: Apply Factors
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-calc-factors}"
-            Catch:
-              - ErrorEquals: [States.ALL]
-                Next: Failure
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                distinct_values.$: $.distinct_values
-                period_column.$: $.period_column
-                factors_parameters.$: $.factors_parameters
-                queue_url.$: $.queue_url
-            ResultPath: $.data.lambdaresult
-            Type: Task
+            Calculate Factors:
+              Next: Apply Factors
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-calc-factors}"
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  distinct_values.$: $.distinct_values
+                  period_column.$: $.period_column
+                  factors_parameters.$: $.factors_parameters
+                  queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
+              ResultPath: $.data.lambdaresult
+              Type: Task
 
-          Apply Factors:
-            Next: Aggregation
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.imputation-apply-factors}"
-            Catch:
-              - ErrorEquals: [States.ALL]
-                Next: Failure
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                distinct_values.$: $.distinct_values
-                sum_columns.$: $.sum_columns
-                period_column.$: $.period_column
-                factors_parameters.$: $.factors_parameters
-                raw_input_file.$: $.raw_input_file
-                queue_url.$: $.queue_url
-            ResultPath: $.data.lambdaresult
-            Type: Task
+            Apply Factors:
+              Next: Aggregation
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-apply-factors}"
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  distinct_values.$: $.distinct_values
+                  sum_columns.$: $.sum_columns
+                  period_column.$: $.period_column
+                  factors_parameters.$: $.factors_parameters
+                  raw_input_file.$: $.raw_input_file
+                  queue_url.$: $.queue_url
+                  questions_list.$: $.questions_list
+              ResultPath: $.data.lambdaresult
+              Type: Task
 
-          Aggregation:
-            Type: Parallel
-            Next: Combiner
-            ResultPath: $
-            OutputPath: $[0]
-            Branches:
-              - StartAt: passRuntime
-                States:
-                  passRuntime:
-                    Type: Pass
-                    End: true
+            Aggregation:
+              Type: Parallel
+              Next: Combiner
+              ResultPath: $
+              OutputPath: $[0]
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              Branches:
+                - StartAt: passRuntime
+                  States:
+                    passRuntime:
+                      Type: Pass
+                      End: true
 
               - StartAt: County Total
                 States:
@@ -323,85 +335,83 @@ stepFunctions:
                       function:${self:custom.aggregation-column}"
                     End: true
 
-              - StartAt: EntRef Count
-                States:
-                  EntRef Count:
-                    Type: Task
-                    InputPath: $
-                    Parameters:
-                      RuntimeVariables:
-                        run_id.$: $.run_id
-                        aggregation_type.$: $.aggregation_type[1]
-                        aggregated_column.$: $.aggregated_column
-                        cell_total_column.$: $.cell_total_column[1]
-                        total_column.$: $.total_column[1]
-                        additional_aggregated_column.$: $.additional_aggregated_column
-                        queue_url.$: $.queue_url
-                    Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-                      function:${self:custom.aggregation-column}"
-                    End: true
+                - StartAt: EntRef Count
+                  States:
+                    EntRef Count:
+                      Type: Task
+                      InputPath: $
+                      Parameters:
+                        RuntimeVariables:
+                          run_id.$: $.run_id
+                          aggregation_type.$: $.aggregation_type[1]
+                          aggregated_column.$: $.aggregated_column
+                          cell_total_column.$: $.cell_total_column[1]
+                          total_column.$: $.total_column[0]
+                          additional_aggregated_column.$: $.additional_aggregated_column
+                          queue_url.$: $.queue_url
+                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"
+                      End: true
 
-              - StartAt: Calculate Top2
-                States:
-                  Calculate Top2:
-                    Type: Task
-                    InputPath: $
-                    Parameters:
-                      RuntimeVariables:
-                        run_id.$: $.run_id
-                        aggregated_column.$: $.aggregated_column
-                        additional_aggregated_column.$: $.additional_aggregated_column
-                        top1_column.$: $.top1_column
-                        top2_column.$: $.top2_column
-                        total_column.$: $.total_column[0]
-                        queue_url.$: $.queue_url
-                    Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-                      function:${self:custom.aggregation-top2}"
-                    End: true
+                - StartAt: Calculate Top2
+                  States:
+                    Calculate Top2:
+                      Type: Task
+                      InputPath: $
+                      Parameters:
+                        RuntimeVariables:
+                          run_id.$: $.run_id
+                          aggregated_column.$: $.aggregated_column
+                          additional_aggregated_column.$: $.additional_aggregated_column
+                          top1_column.$: $.top1_column
+                          top2_column.$: $.top2_column
+                          total_column.$: $.total_column[1]
+                          queue_url.$: $.queue_url
+                      Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"
+                      End: true
 
-          Combiner:
-            Next: Disclosure
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.aggregation-combiner}"
-            Catch:
-              - ErrorEquals: [States.ALL]
-                Next: Failure
-            ResultPath: $.data.lambdaresult
-            OutputPath: $
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                aggregated_column.$: $.aggregated_column
-                additional_aggregated_column.$: $.additional_aggregated_column
-                queue_url.$: $.queue_url
-            Type: Task
+            Combiner:
+              Next: Disclosure
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              ResultPath: $.data.lambdaresult
+              OutputPath: $
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  aggregated_column.$: $.aggregated_column
+                  additional_aggregated_column.$: $.additional_aggregated_column
+                  queue_url.$: $.queue_url
+              Type: Task
 
-          Disclosure:
-            Next: Success
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.disclosure-wrangler}"
-            Catch:
-              - ErrorEquals: [States.ALL]
-                Next: Failure
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                disclosivity_marker.$: $.disclosivity_marker
-                publishable_indicator.$: $.publishable_indicator
-                explanation.$: $.explanation
-                total_column.$: $.total_column[0]
-                parent_column.$: $.parent_column
-                threshold.$: $.threshold
-                cell_total_column.$: $.cell_total_column[0]
-                top1_column.$: $.top1_column
-                top2_column.$: $.top2_column
-                stage5_threshold.$: $.stage5_threshold
-                disclosure_stages.$: $.disclosure_stages
-                queue_url.$: $.queue_url
-            ResultPath: $.data.lambdaresult
-            Type: Task
+            Disclosure:
+              Next: Success
+              Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-wrangler}"
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
+              InputPath: $
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  disclosivity_marker.$: $.disclosivity_marker
+                  publishable_indicator.$: $.publishable_indicator
+                  explanation.$: $.explanation
+                  total_column.$: $.total_column[1]
+                  parent_column.$: $.parent_column
+                  threshold.$: $.threshold
+                  cell_total_column.$: $.cell_total_column[0]
+                  top1_column.$: $.top1_column
+                  top2_column.$: $.top2_column
+                  stage5_threshold.$: $.stage5_threshold
+                  disclosure_stages.$: $.disclosure_stages
+                  queue_url.$: $.queue_url
+              ResultPath: $.data.lambdaresult
+              Type: Task
 
           Success:
             End: true

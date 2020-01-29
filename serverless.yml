@@ -327,7 +327,7 @@ stepFunctions:
                         aggregation_type.$: $.aggregation_type[0]
                         aggregated_column.$: $.aggregated_column
                         cell_total_column.$: $.cell_total_column[0]
-                        total_column.$: $.total_column[0]
+                        total_column.$: $.total_column[1]
                         additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length

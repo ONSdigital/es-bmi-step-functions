@@ -115,8 +115,9 @@ stepFunctions:
             Enrichment:
               Next: Strata
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.enrichment}"
-              Catch:
+              Catch: 
                 - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
                   Next: Failure
               InputPath: $
               Parameters:
@@ -131,8 +132,9 @@ stepFunctions:
             Strata:
               Next: Imputation Calculate Movements
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.strata}"
-              Catch:
+              Catch: 
                 - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
                   Next: Failure
               InputPath: $
               Parameters:
@@ -148,8 +150,9 @@ stepFunctions:
             Imputation Calculate Movements:
               Next: Should Imputation Run
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-movements}"
-              Catch:
+              Catch: 
                 - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
                   Next: Failure
               InputPath: $
               Parameters:
@@ -176,8 +179,9 @@ stepFunctions:
             Calculate All-GB Region:
               Next: Calculate Means
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.all-gb-region}"
-              Catch:
+              Catch: 
                 - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
                   Next: Failure
               InputPath: $
               Parameters:
@@ -191,8 +195,9 @@ stepFunctions:
             Calculate Means:
               Next: Calculate IQRS
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-means}"
-              Catch:
+              Catch: 
                 - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
                   Next: Failure
               InputPath: $
               Parameters:
@@ -206,8 +211,9 @@ stepFunctions:
             Calculate IQRS:
               Next: Calculate Atypicals
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-iqrs}"
-              Catch:
+              Catch: 
                 - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
                   Next: Failure
               InputPath: $
               Parameters:
@@ -221,8 +227,9 @@ stepFunctions:
             Calculate Atypicals:
               Next: Re-Calculate Means
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-atyps}"
-              Catch:
+              Catch: 
                 - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
                   Next: Failure
               Parameters:
                 RuntimeVariables:
@@ -234,8 +241,9 @@ stepFunctions:
             Re-Calculate Means:
               Next: Calculate Factors
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-recalc-means}"
-              Catch:
+              Catch: 
                 - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
                   Next: Failure
               InputPath: $
               Parameters:
@@ -249,8 +257,9 @@ stepFunctions:
             Calculate Factors:
               Next: Apply Factors
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-calc-factors}"
-              Catch:
+              Catch: 
                 - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
                   Next: Failure
               InputPath: $
               Parameters:
@@ -266,8 +275,9 @@ stepFunctions:
             Apply Factors:
               Next: Aggregation
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-apply-factors}"
-              Catch:
+              Catch: 
                 - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
                   Next: Failure
               InputPath: $
               Parameters:
@@ -287,6 +297,10 @@ stepFunctions:
               Next: Combiner
               ResultPath: $
               OutputPath: $[0]
+              Catch: 
+                - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
+                  Next: Failure
               Branches:
                 - StartAt: passRuntime
                   States:
@@ -348,8 +362,9 @@ stepFunctions:
             Combiner:
               Next: Disclosure
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"
-              Catch:
+              Catch: 
                 - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
                   Next: Failure
               ResultPath: $.data.lambdaresult
               OutputPath: $
@@ -365,8 +380,9 @@ stepFunctions:
             Disclosure:
               Next: Success
               Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-wrangler}"
-              Catch:
+              Catch: 
                 - ErrorEquals: [States.ALL]
+                  ResultPath: $.error
                   Next: Failure
               InputPath: $
               Parameters:

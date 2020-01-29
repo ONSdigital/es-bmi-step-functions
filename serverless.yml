@@ -379,7 +379,7 @@ stepFunctions:
                         top2_column.$: $.top2_column
                         total_column.$: $.total_column[1]
                         queue_url.$: $.queue_url
-                    Resource: >+
+                    Resource: >-
                       arn:aws:lambda:eu-west-2:${self:custom.accountId}:
                       function:${self:custom.aggregation-top2}
                     End: true
@@ -434,7 +434,7 @@ stepFunctions:
 
           Success:
             End: true
-            Resource: >
+            Resource: >-
               arn:aws:lambda:eu-west-2:${self:custom.accountId}:
               function:${self:custom.method-return}
             InputPath: $
@@ -443,7 +443,7 @@ stepFunctions:
 
           Failure:
             End: true
-            Resource: |
+            Resource: |-
               arn:aws:lambda:eu-west-2:${self:custom.accountId}:
               function:${self:custom.error-capture}
             InputPath: $

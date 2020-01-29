@@ -341,8 +341,9 @@ stepFunctions:
                         total_column.$: $.total_column[0]
                         additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
-                    Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-                      function:${self:custom.aggregation-column}"
+                    Resource: |+
+                      arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                      function:${self:custom.aggregation-column}
                     End: true
 
               - StartAt: EntRef Count
@@ -359,8 +360,9 @@ stepFunctions:
                         total_column.$: $.total_column[0]
                         additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
-                    Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-                      function:${self:custom.aggregation-column}"
+                    Resource: |-
+                      arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                      function:${self:custom.aggregation-column}
                     End: true
 
               - StartAt: Calculate Top2
@@ -377,14 +379,16 @@ stepFunctions:
                         top2_column.$: $.top2_column
                         total_column.$: $.total_column[1]
                         queue_url.$: $.queue_url
-                    Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-                      function:${self:custom.aggregation-top2}"
+                    Resource: >+
+                      arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+                      function:${self:custom.aggregation-top2}
                     End: true
 
           Combiner:
             Next: Disclosure
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.aggregation-combiner}"
+            Resource: >-
+              arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+              function:${self:custom.aggregation-combiner}
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -402,8 +406,9 @@ stepFunctions:
 
           Disclosure:
             Next: Success
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.disclosure-wrangler}"
+            Resource: '
+              arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+              function:${self:custom.disclosure-wrangler}'
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -429,15 +434,16 @@ stepFunctions:
 
           Success:
             End: true
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
-              function:${self:custom.method-return}"
+            Resource: >
+              arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+              function:${self:custom.method-return}
             InputPath: $
             ResultPath: $.data.lambdaresult
             Type: Task
 
           Failure:
             End: true
-            Resource: >
+            Resource: |
               arn:aws:lambda:eu-west-2:${self:custom.accountId}:
               function:${self:custom.error-capture}
             InputPath: $

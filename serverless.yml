@@ -437,9 +437,9 @@ stepFunctions:
 
           Failure:
             End: true
-            Resource: 
-              "arn:aws:lambda:eu-west-2:${self:custom.accountId}:"|
-              "function:${self:custom.error-capture}"
+            Resource: >-
+              "arn:aws:lambda:eu-west-2:${self:custom.accountId}:
+              function:${self:custom.error-capture}"
             InputPath: $
             ResultPath: $.data.lambdaresult
             Type: Task

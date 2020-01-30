@@ -71,7 +71,7 @@ stepFunctions:
               threshold.$: $.threshold
               top1_column.$: $.top1_column
               top2_column.$: $.top2_column
-              total_column.$: $.total_column
+              total_columns.$: $.total_columns
               stage5_threshold.$: $.stage5_threshold
               disclosure_stages.$: $.disclosure_stages
               survey_column.$: $.survey_column
@@ -327,7 +327,7 @@ stepFunctions:
                         aggregation_type.$: $.aggregation_type[1]
                         aggregated_column.$: $.aggregated_column
                         cell_total_column.$: $.cell_total_column[0]
-                        total_column.$: $.total_column[1]
+                        total_columns.$: $.total_columns[1]
                         additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
@@ -344,7 +344,7 @@ stepFunctions:
                         aggregation_type.$: $.aggregation_type[0]
                         aggregated_column.$: $.aggregated_column
                         cell_total_column.$: $.cell_total_column[1]
-                        total_column.$: $.total_column[0]
+                        total_columns.$: $.total_columns[0]
                         additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
@@ -362,7 +362,7 @@ stepFunctions:
                         additional_aggregated_column.$: $.additional_aggregated_column
                         top1_column.$: $.top1_column
                         top2_column.$: $.top2_column
-                        total_column.$: $.total_column[1]
+                        total_columns.$: $.total_columns[1]
                         queue_url.$: $.queue_url
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"  # yamllint disable-line rule:line-length
                     End: true
@@ -399,7 +399,7 @@ stepFunctions:
                 disclosivity_marker.$: $.disclosivity_marker
                 publishable_indicator.$: $.publishable_indicator
                 explanation.$: $.explanation
-                total_column.$: $.total_column[1]
+                total_columns.$: $.total_columns[1]
                 parent_column.$: $.parent_column
                 threshold.$: $.threshold
                 cell_total_column.$: $.cell_total_column[0]

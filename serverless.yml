@@ -57,6 +57,7 @@ stepFunctions:
               disclosivity_marker.$: $.disclosivity_marker
               distinct_values.$: $.distinct_values
               explanation.$: $.explanation
+              marine_mismatch_check.$: $.marine_mismatch_check
               run_id.$: $.run_id
               parent_column.$: $.parent_column
               period.$: $.period
@@ -129,6 +130,7 @@ stepFunctions:
                 survey_column.$: $.survey_column
                 queue_url.$: $.queue_url
                 in_file_name.$: $.in_file_name
+                marine_mismatch_check.$: $.marine_mismatch_check
             ResultPath: $.data.lambdaresult
             Type: Task
 

@@ -176,7 +176,7 @@ stepFunctions:
                 Next: Calculate All-GB Region
                 Variable: $.data.lambdaresult.impute
               - BooleanEquals: false
-                Next: Success
+                Next: Aggregation
                 Variable: $.data.lambdaresult.impute
             Type: Choice
 

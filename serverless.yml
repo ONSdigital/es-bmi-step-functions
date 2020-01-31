@@ -76,6 +76,7 @@ stepFunctions:
               disclosure_stages.$: $.disclosure_stages
               survey_column.$: $.survey_column
               factors_parameters.$: $.factors_parameters
+              in_file_name.$: $.in_file_name
             Type: Pass
 
           Choice State:
@@ -127,6 +128,7 @@ stepFunctions:
                 lookups.$: $.lookups
                 survey_column.$: $.survey_column
                 queue_url.$: $.queue_url
+                in_file_name.$: $.in_file_name
             ResultPath: $.data.lambdaresult
             Type: Task
 

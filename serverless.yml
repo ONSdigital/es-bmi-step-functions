@@ -291,7 +291,6 @@ stepFunctions:
                 incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
-                period.$: $.period
                 period_column.$: $.period_column
                 factors_parameters.$: $.factors_parameters
                 queue_url.$: $.queue_url
@@ -314,6 +313,7 @@ stepFunctions:
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 sum_columns.$: $.sum_columns
+                period.$: $.period
                 period_column.$: $.period_column
                 factors_parameters.$: $.factors_parameters
                 raw_input_file.$: $.raw_input_file

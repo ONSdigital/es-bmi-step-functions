@@ -48,17 +48,20 @@ stepFunctions:
               RuntimeVariables:
                 checkpoint.$: $.checkpoint
               MessageStructure: json
-              lookups.$: $.lookups
               additional_aggregated_column.$: $.additional_aggregated_column
               aggregated_column.$: $.aggregated_column
               aggregation_type.$: $.aggregation_type
-              movement_type.$: $.movement_type
               cell_total_column.$: $.cell_total_column
+              disclosure_stages.$: $.disclosure_stages
               disclosivity_marker.$: $.disclosivity_marker
               distinct_values.$: $.distinct_values
               explanation.$: $.explanation
+              factors_parameters.$: $.factors_parameters
+              in_file_name.$: $.in_file_name
+              incoming_message_group.$: $.incoming_message_group
+              lookups.$: $.lookups
               marine_mismatch_check.$: $.marine_mismatch_check
-              run_id.$: $.run_id
+              movement_type.$: $.movement_type
               parent_column.$: $.parent_column
               period.$: $.period
               periodicity.$: $.periodicity
@@ -67,17 +70,15 @@ stepFunctions:
               queue_url.$: $.queue_url
               questions_list.$: $.questions_list
               raw_input_file.$: $.raw_input_file
+              run_id.$: $.run_id
+              stage5_threshold.$: $.stage5_threshold
               sum_columns.$: $.sum_columns
               survey.$: $.survey
+              survey_column.$: $.survey_column
               threshold.$: $.threshold
               top1_column.$: $.top1_column
               top2_column.$: $.top2_column
               total_columns.$: $.total_columns
-              stage5_threshold.$: $.stage5_threshold
-              disclosure_stages.$: $.disclosure_stages
-              survey_column.$: $.survey_column
-              factors_parameters.$: $.factors_parameters
-              in_file_name.$: $.in_file_name
             Type: Pass
 
           Choice State:
@@ -129,7 +130,7 @@ stepFunctions:
                 lookups.$: $.lookups
                 survey_column.$: $.survey_column
                 queue_url.$: $.queue_url
-                in_file_name.$: $.in_file_name
+                in_file_name.$: $.in_file_name.enrichment
                 marine_mismatch_check.$: $.marine_mismatch_check
             ResultPath: $.data.lambdaresult
             Type: Task
@@ -162,6 +163,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                in_file_name.$: $.in_file_name.imputation_movement
+                incoming_message_group.$: $.incoming_message_group.imputation_movement
                 run_id.$: $.run_id
                 movement_type.$: $.movement_type
                 period.$: $.period
@@ -192,6 +195,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                in_file_name.$: $.in_file_name.add_gb_region
+                incoming_message_group.$: $.incoming_message_group.add_gb_region
                 run_id.$: $.run_id
                 factors_parameters.$: $.factors_parameters
                 queue_url.$: $.queue_url
@@ -208,6 +213,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                in_file_name.$: $.in_file_name.imputation_means
+                incoming_message_group.$: $.incoming_message_group.imputation_means
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 queue_url.$: $.queue_url
@@ -225,6 +232,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                in_file_name.$: $.in_file_name.iqrs
+                incoming_message_group.$: $.incoming_message_group.iqrs
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 queue_url.$: $.queue_url
@@ -241,6 +250,8 @@ stepFunctions:
                 Next: Failure
             Parameters:
               RuntimeVariables:
+                in_file_name.$: $.in_file_name.atypicals
+                incoming_message_group.$: $.incoming_message_group.atypicals
                 run_id.$: $.run_id
                 queue_url.$: $.queue_url
                 questions_list.$: $.questions_list
@@ -257,6 +268,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                in_file_name.$: $.in_file_name.imputation_recalc_means
+                incoming_message_group.$: $.incoming_message_group.imputation_recalc_means
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 queue_url.$: $.queue_url
@@ -274,6 +287,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                in_file_name.$: $.in_file_name.calcfactors
+                incoming_message_group.$: $.incoming_message_group.calcfactors
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 period_column.$: $.period_column
@@ -293,6 +308,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                in_file_name.$: $.in_file_name.apply
+                incoming_message_group.$: $.incoming_message_group.apply
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 sum_columns.$: $.sum_columns

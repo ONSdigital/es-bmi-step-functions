@@ -130,7 +130,7 @@ stepFunctions:
                 lookups.$: $.lookups
                 survey_column.$: $.survey_column
                 queue_url.$: $.queue_url
-                in_file_name.$: $.in_file_name.enrichment
+                in_file_name.$: $.in_file_name
                 marine_mismatch_check.$: $.marine_mismatch_check
             ResultPath: $.data.lambdaresult
             Type: Task
@@ -163,8 +163,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name.imputation_movement
-                incoming_message_group.$: $.incoming_message_group.imputation_movement
+                in_file_name.$: $.in_file_name
+                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 movement_type.$: $.movement_type
                 period.$: $.period
@@ -195,8 +195,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name.add_gb_region
-                incoming_message_group.$: $.incoming_message_group.add_gb_region
+                in_file_name.$: $.in_file_name
+                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 factors_parameters.$: $.factors_parameters
                 queue_url.$: $.queue_url
@@ -213,8 +213,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name.imputation_means
-                incoming_message_group.$: $.incoming_message_group.imputation_means
+                in_file_name.$: $.in_file_name
+                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 queue_url.$: $.queue_url
@@ -232,8 +232,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name.iqrs
-                incoming_message_group.$: $.incoming_message_group.iqrs
+                in_file_name.$: $.in_file_name
+                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 queue_url.$: $.queue_url
@@ -250,8 +250,8 @@ stepFunctions:
                 Next: Failure
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name.atypicals
-                incoming_message_group.$: $.incoming_message_group.atypicals
+                in_file_name.$: $.in_file_name
+                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 queue_url.$: $.queue_url
                 questions_list.$: $.questions_list
@@ -268,8 +268,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name.imputation_recalc_means
-                incoming_message_group.$: $.incoming_message_group.imputation_recalc_means
+                in_file_name.$: $.in_file_name
+                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 queue_url.$: $.queue_url
@@ -287,8 +287,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name.calcfactors
-                incoming_message_group.$: $.incoming_message_group.calcfactors
+                in_file_name.$: $.in_file_name
+                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 period_column.$: $.period_column
@@ -308,8 +308,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name.apply
-                incoming_message_group.$: $.incoming_message_group.apply
+                in_file_name.$: $.in_file_name
+                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 sum_columns.$: $.sum_columns

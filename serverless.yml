@@ -314,6 +314,7 @@ stepFunctions:
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 sum_columns.$: $.sum_columns
+                period.$: $.period
                 period_column.$: $.period_column
                 factors_parameters.$: $.factors_parameters
                 raw_input_file.$: $.raw_input_file

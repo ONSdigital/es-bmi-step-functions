@@ -1,0 +1,31 @@
+---
+service: serverless-holder
+provider:
+  name: aws
+  runtime: python3.7
+  region: eu-west-2
+  package:
+    individually: true
+  deploymentBucket:
+    name: com.serverless.${self:provider.region}.results.ons.deploys
+
+stepFunctions:
+  stateMachines:
+    Serverless-space-holder:
+      name: serverless-space-holder
+      tags:
+        app: results
+      definition:
+        Comment:
+        StartAt: Success
+        States:
+
+          Success:
+            End: true
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.method-return}"  # yamllint disable-line rule:line-length
+            InputPath: $
+            ResultPath: $.data.lambdaresult
+            Type: Task
+
+plugins:
+  - serverless-step-functions

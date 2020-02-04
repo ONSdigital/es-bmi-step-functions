@@ -1,5 +1,38 @@
 # es-bmi-step-functions
 
+This repository contains all of the BMI Step functions. They are stored within serverless.yml files.
+
+The Majority of the step functions work in the same way but the order has been changed due to the 
+way the system operates. 
+
+The configuration of runtime variables required for each run are contained
+in the respective systems config files, located on AWS in the Results bucket inside the configs folder.
+
+## Sand & Gravel
+Module Order:
+1. Enrichment
+2. Strata
+3. Imputation movement
+4. Imputation add GB region
+5. Imputation means
+6. Imputation IQRS
+7. Imputation atypicals
+8. Imputation re-calculate means
+9. Imputation calculate factors
+10. Imputation apply factors
+
+## Blocks
+Module Order:
+1. Enrichment
+2. Imputation movement
+3. Imputation means
+4. Imputation IQRS
+5. Imputation atypicals
+6. Imputation add GB region
+7. Imputation re-calculate means
+8. Imputation calculate factors
+9. Imputation apply factors
+
 ## Deployment:
 
 When a change is made and pushed to master this will deploy, the pipeline is set-up in a way

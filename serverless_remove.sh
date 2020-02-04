@@ -3,5 +3,7 @@
 cd step-function-repository
 
 serverless plugin install --name serverless-step-functions
-echo Destroying serverless bundle...
-serverless remove --verbose;
+echo Destroying Sand and Gravel serverless bundle...
+serverless remove --verbose --config sg_serverless.yml;
+echo Destroying Blocks serverless bundle...
+serverless remove --verbose --config blk_serverless.yml;

@@ -6,6 +6,6 @@ serverless plugin install --name serverless-step-functions
 echo Packaging serverless bundle...
 serverless package --package pkg
 echo Deploying Sand and Gravel to AWS..
-serverless deploy --verbose --config sg_serverless.yml;
+serverless deploy --config sg_serverless.yml --verbose;
 echo Deploying Blocks to AWS..
-serverless deploy --verbose --config blk_serverless.yml;
+serverless deploy --config blk_serverless.yml --verbose;

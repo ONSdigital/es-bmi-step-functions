@@ -1,5 +1,5 @@
 ---
-service: bmi-blocks-results-sg
+service: bmi-results-blk
 provider:
   name: aws
   runtime: python3.7

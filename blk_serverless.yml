@@ -38,7 +38,7 @@ stepFunctions:
       tags:
         app: results
       definition:
-        Comment: Calls the lambdas required to run the BMI Sand and Gravel Survey.
+        Comment: Calls the lambdas required to run the BMI Blocks Survey.
         StartAt: Inputs
         States:
           Inputs:
@@ -78,6 +78,7 @@ stepFunctions:
               in_file_name.$: $.in_file_name
               marine_mismatch_check.$: $.marine_mismatch_check
               incoming_message_group.$: $.incoming_message_group
+              out_file_name.$: $.out_file_name
             Type: Pass
 
           Choice State:
@@ -332,6 +333,8 @@ stepFunctions:
                         total_columns.$: $.total_columns[1]
                         additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
+                        in_file_name:
+                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -349,6 +352,8 @@ stepFunctions:
                         total_columns.$: $.total_columns[0]
                         additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
+                        in_file_name:
+                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -366,6 +371,8 @@ stepFunctions:
                         top2_column.$: $.top2_column
                         total_columns.$: $.total_columns[1]
                         queue_url.$: $.queue_url
+                        in_file_name:
+                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -385,6 +392,8 @@ stepFunctions:
                 aggregated_column.$: $.aggregated_column
                 additional_aggregated_column.$: $.additional_aggregated_column
                 queue_url.$: $.queue_url
+                in_file_name:
+                  aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
             Type: Task
 
           Disclosure:
@@ -410,6 +419,7 @@ stepFunctions:
                 stage5_threshold.$: $.stage5_threshold
                 disclosure_stages.$: $.disclosure_stages
                 queue_url.$: $.queue_url
+                out_file_name.$: $.out_file_name.disclosure
             ResultPath: $.data.lambdaresult
             Type: Task
 

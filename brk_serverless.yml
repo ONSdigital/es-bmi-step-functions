@@ -1,5 +1,5 @@
 ---
-service: bmi-results-sg
+service: bmi-results-brk
 provider:
   name: aws
   runtime: python3.7
@@ -16,7 +16,6 @@ custom:
   wranglers: ${ssm:/aws/reference/secretsmanager/results-bmi-sg-wranglers~true}
   ingest: ${self:custom.wranglers.ingest}
   enrichment: ${self:custom.wranglers.enrichment}
-  strata: ${self:custom.wranglers.strata}
   imputation-movements: ${self:custom.wranglers.imputation-movements}
   imputation-means: ${self:custom.wranglers.imputation-means}
   imputation-iqrs: ${self:custom.wranglers.imputation-iqrs}
@@ -24,6 +23,7 @@ custom:
   imputation-recalc-means: ${self:custom.wranglers.imputation-recalc-means}
   imputation-calc-factors: ${self:custom.wranglers.imputation-calc-factors}
   imputation-apply-factors: ${self:custom.wranglers.imputation-apply-factors}
+  aggregation-bricks-splitter: ${self:custom.wranglers.aggregation-bricks-splitter}
   aggregation-top2: ${self:custom.wranglers.aggregation-top2}
   aggregation-column: ${self:custom.wranglers.aggregation-column}
   aggregation-combiner: ${self:custom.wranglers.aggregation-combiner}
@@ -34,12 +34,12 @@ custom:
 
 stepFunctions:
   stateMachines:
-    ES-BMISG-Results:
-      name: ES-BMISG-Results
+    ES-BMIBRK-Results:
+      name: ES-BMIBRK-Results
       tags:
         app: results
       definition:
-        Comment: Calls the lambdas required to run the BMI Sand and Gravel Survey.
+        Comment: Calls the lambdas required to run the BMI Bricks Survey.
         StartAt: Inputs
         States:
           Inputs:
@@ -48,20 +48,16 @@ stepFunctions:
               RuntimeVariables:
                 checkpoint.$: $.checkpoint
               MessageStructure: json
+              lookups.$: $.lookups
               additional_aggregated_column.$: $.additional_aggregated_column
               aggregated_column.$: $.aggregated_column
               aggregation_type.$: $.aggregation_type
+              movement_type.$: $.movement_type
               cell_total_column.$: $.cell_total_column
-              disclosure_stages.$: $.disclosure_stages
               disclosivity_marker.$: $.disclosivity_marker
               distinct_values.$: $.distinct_values
               explanation.$: $.explanation
-              factors_parameters.$: $.factors_parameters
-              in_file_name.$: $.in_file_name
-              incoming_message_group.$: $.incoming_message_group
-              lookups.$: $.lookups
-              marine_mismatch_check.$: $.marine_mismatch_check
-              movement_type.$: $.movement_type
+              run_id.$: $.run_id
               parent_column.$: $.parent_column
               period.$: $.period
               periodicity.$: $.periodicity
@@ -70,15 +66,19 @@ stepFunctions:
               queue_url.$: $.queue_url
               questions_list.$: $.questions_list
               raw_input_file.$: $.raw_input_file
-              run_id.$: $.run_id
-              stage5_threshold.$: $.stage5_threshold
               sum_columns.$: $.sum_columns
               survey.$: $.survey
-              survey_column.$: $.survey_column
               threshold.$: $.threshold
               top1_column.$: $.top1_column
               top2_column.$: $.top2_column
               total_columns.$: $.total_columns
+              stage5_threshold.$: $.stage5_threshold
+              disclosure_stages.$: $.disclosure_stages
+              survey_column.$: $.survey_column
+              factors_parameters.$: $.factors_parameters
+              in_file_name.$: $.in_file_name
+              marine_mismatch_check.$: $.marine_mismatch_check
+              incoming_message_group.$: $.incoming_message_group
               out_file_name.$: $.out_file_name
             Type: Pass
 
@@ -90,17 +90,12 @@ stepFunctions:
               - Next: Enrichment
                 NumericEquals: 1
                 Variable: $.RuntimeVariables.checkpoint
-              - Next: Strata
+                # yamllint disable-line rule:line-length
+              - Next: Imputation Calculate Movements  # This has been done to allow for uniformity across BMI surveys and prevent the system falling over if they put in the strata checkpoint.
                 NumericEquals: 2
                 Variable: $.RuntimeVariables.checkpoint
               - Next: Imputation Calculate Movements
                 NumericEquals: 3
-                Variable: $.RuntimeVariables.checkpoint
-              - Next: Aggregation
-                NumericEquals: 4
-                Variable: $.RuntimeVariables.checkpoint
-              - Next: Disclosure
-                NumericEquals: 5
                 Variable: $.RuntimeVariables.checkpoint
             Type: Choice
 
@@ -118,7 +113,7 @@ stepFunctions:
             Type: Task
 
           Enrichment:
-            Next: Strata
+            Next: Imputation Calculate Movements
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.enrichment}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
@@ -132,25 +127,8 @@ stepFunctions:
                 survey_column.$: $.survey_column
                 queue_url.$: $.queue_url
                 in_file_name.$: $.in_file_name
+                incoming_message_group.$: $.incoming_message_group
                 marine_mismatch_check.$: $.marine_mismatch_check
-            ResultPath: $.data.lambdaresult
-            Type: Task
-
-          Strata:
-            Next: Imputation Calculate Movements
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.strata}"  # yamllint disable-line rule:line-length
-            Catch:
-              - ErrorEquals: [States.ALL]
-                ResultPath: $.error
-                Next: Failure
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                run_id.$: $.run_id
-                survey_column.$: $.survey_column
-                distinct_values.$: $.distinct_values
-                period.$: $.period
-                queue_url.$: $.queue_url
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -164,8 +142,6 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 movement_type.$: $.movement_type
                 period.$: $.period
@@ -173,52 +149,35 @@ stepFunctions:
                 period_column.$: $.period_column
                 queue_url.$: $.queue_url
                 questions_list.$: $.questions_list
+                incoming_message_group.$: $.incoming_message_group
+                in_file_name.$: $.in_file_name
             ResultPath: $.data.lambdaresult
             Type: Task
 
           Should Imputation Run:
             Choices:
               - BooleanEquals: true
-                Next: Calculate All-GB Region
+                Next: Calculate Means
                 Variable: $.data.lambdaresult.impute
               - BooleanEquals: false
-                Next: Aggregation
+                Next: Re-organise Data
                 Variable: $.data.lambdaresult.impute
             Type: Choice
-
-          Calculate All-GB Region:
-            Next: Calculate Means
-            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.all-gb-region}"  # yamllint disable-line rule:line-length
-            Catch:
-              - ErrorEquals: [States.ALL]
-                ResultPath: $.error
-                Next: Failure
-            InputPath: $
-            Parameters:
-              RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
-                run_id.$: $.run_id
-                factors_parameters.$: $.factors_parameters
-                queue_url.$: $.queue_url
-            ResultPath: $.data.lambdaresult
-            Type: Task
 
           Calculate Means:
             Next: Calculate IQRS
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-means}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
-                ResultPath: $.error
                 Next: Failure
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 queue_url.$: $.queue_url
+                incoming_message_group.$: $.incoming_message_group
+                in_file_name.$: $.in_file_name
                 questions_list.$: $.questions_list
             ResultPath: $.data.lambdaresult
             Type: Task
@@ -228,16 +187,15 @@ stepFunctions:
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-iqrs}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
-                ResultPath: $.error
                 Next: Failure
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 queue_url.$: $.queue_url
+                incoming_message_group.$: $.incoming_message_group
+                in_file_name.$: $.in_file_name
                 questions_list.$: $.questions_list
             ResultPath: $.data.lambdaresult
             Type: Task
@@ -247,14 +205,13 @@ stepFunctions:
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-atyps}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
-                ResultPath: $.error
                 Next: Failure
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 queue_url.$: $.queue_url
+                incoming_message_group.$: $.incoming_message_group
+                in_file_name.$: $.in_file_name
                 questions_list.$: $.questions_list
             ResultPath: $.data.lambdaresult
             Type: Task
@@ -269,12 +226,12 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
                 queue_url.$: $.queue_url
                 questions_list.$: $.questions_list
+                incoming_message_group.$: $.incoming_message_group
+                in_file_name.$: $.in_file_name
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -288,20 +245,19 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
-                period.$: $.period
                 period_column.$: $.period_column
                 factors_parameters.$: $.factors_parameters
                 queue_url.$: $.queue_url
                 questions_list.$: $.questions_list
+                incoming_message_group.$: $.incoming_message_group
+                in_file_name.$: $.in_file_name
             ResultPath: $.data.lambdaresult
             Type: Task
 
           Apply Factors:
-            Next: Aggregation
+            Next: Re-organise Data
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-apply-factors}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
@@ -310,120 +266,126 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
                 run_id.$: $.run_id
+                period.$: $.period
                 distinct_values.$: $.distinct_values
                 sum_columns.$: $.sum_columns
-                period.$: $.period
                 period_column.$: $.period_column
                 factors_parameters.$: $.factors_parameters
                 raw_input_file.$: $.raw_input_file
                 queue_url.$: $.queue_url
                 questions_list.$: $.questions_list
+                incoming_message_group.$: $.incoming_message_group
+                in_file_name.$: $.in_file_name
             ResultPath: $.data.lambdaresult
             Type: Task
 
-          Aggregation:
-            Type: Parallel
-            Next: Combiner
-            ResultPath: $
-            OutputPath: $[0]
+          Re-organise Data:
+            Next: Region Aggregation
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-bricks-splitter}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
-                ResultPath: $.error
                 Next: Failure
+            InputPath: $
+            Parameters:
+              RuntimeVariables:
+                run_id.$: $.run_id
+                in_file_name.$: $.in_file_name
+                incoming_message_group.$: $.incoming_message_group
+                factors_parameters.$: $.factors_parameters
+                queue_url.$: $.queue_url
+            ResultPath: $.data.lambdaresult
+            Type: Task
+
+          Region Aggregation:
+            Type: Parallel
+            Next: Region Combiner
+            ResultPath: $
+            OutputPath: $[0]
             Branches:
+
               - StartAt: passRuntime
                 States:
                   passRuntime:
                     Type: Pass
                     End: true
 
-              - StartAt: County Total
+              - StartAt: Region County Total
                 States:
-                  County Total:
+                  Region County Total:
                     Type: Task
                     InputPath: $
                     Parameters:
                       RuntimeVariables:
                         run_id.$: $.run_id
                         aggregation_type.$: $.aggregation_type[1]
-                        aggregated_column.$: $.aggregated_column
-                        cell_total_column.$: $.cell_total_column[0]
+                        aggregated_column.$: $.aggregated_column[0]
+                        cell_total_column.$: $.cell_total_column[2]
                         total_columns.$: $.total_columns[1]
-                        additional_aggregated_column.$: $.additional_aggregated_column
+                        additional_aggregated_column.$: $.additional_aggregated_column[0]
                         queue_url.$: $.queue_url
                         in_file_name:
-                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
+                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[1]
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
-              - StartAt: EntRef Count
+              - StartAt: Region EntRef Count
                 States:
-                  EntRef Count:
+                  Region EntRef Count:
                     Type: Task
                     InputPath: $
                     Parameters:
                       RuntimeVariables:
                         run_id.$: $.run_id
                         aggregation_type.$: $.aggregation_type[0]
-                        aggregated_column.$: $.aggregated_column
+                        aggregated_column.$: $.aggregated_column[0]
                         cell_total_column.$: $.cell_total_column[1]
                         total_columns.$: $.total_columns[0]
-                        additional_aggregated_column.$: $.additional_aggregated_column
+                        additional_aggregated_column.$: $.additional_aggregated_column[0]
                         queue_url.$: $.queue_url
                         in_file_name:
-                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
+                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[1]
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
-              - StartAt: Calculate Top2
+              - StartAt: Region Calculate Top2
                 States:
-                  Calculate Top2:
+                  Region Calculate Top2:
                     Type: Task
                     InputPath: $
                     Parameters:
                       RuntimeVariables:
                         run_id.$: $.run_id
-                        aggregated_column.$: $.aggregated_column
-                        additional_aggregated_column.$: $.additional_aggregated_column
+                        aggregated_column.$: $.aggregated_column[0]
+                        additional_aggregated_column.$: $.additional_aggregated_column[0]
                         top1_column.$: $.top1_column
                         top2_column.$: $.top2_column
                         total_columns.$: $.total_columns[1]
                         queue_url.$: $.queue_url
                         in_file_name:
-                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
+                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[1]
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"  # yamllint disable-line rule:line-length
                     End: true
 
-          Combiner:
-            Next: Disclosure
+          Region Combiner:
+            Next: Region Disclosure
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"  # yamllint disable-line rule:line-length
-            Catch:
-              - ErrorEquals: [States.ALL]
-                ResultPath: $.error
-                Next: Failure
             ResultPath: $.data.lambdaresult
             OutputPath: $
             InputPath: $
             Parameters:
               RuntimeVariables:
                 run_id.$: $.run_id
-                aggregated_column.$: $.aggregated_column
-                additional_aggregated_column.$: $.additional_aggregated_column
+                aggregated_column.$: $.aggregated_column[0]
+                additional_aggregated_column.$: $.additional_aggregated_column[0]
                 queue_url.$: $.queue_url
                 in_file_name:
-                  aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
+                  aggregation_by_column.$: $.in_file_name.aggregation_by_column[1]
             Type: Task
 
-          Disclosure:
-            Next: Success
+          Region Disclosure:
+            Next: Brick Aggregation
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-wrangler}"  # yamllint disable-line rule:line-length
-            Catch:
-              - ErrorEquals: [States.ALL]
-                ResultPath: $.error
-                Next: Failure
             InputPath: $
             Parameters:
               RuntimeVariables:
@@ -434,13 +396,122 @@ stepFunctions:
                 total_columns.$: $.total_columns[1]
                 parent_column.$: $.parent_column
                 threshold.$: $.threshold
-                cell_total_column.$: $.cell_total_column[0]
+                cell_total_column.$: $.cell_total_column[1]
                 top1_column.$: $.top1_column
                 top2_column.$: $.top2_column
                 stage5_threshold.$: $.stage5_threshold
                 disclosure_stages.$: $.disclosure_stages
                 queue_url.$: $.queue_url
-                out_file_name.$: $.out_file_name.disclosure
+                out_file_name.$: $.out_file_name.disclosure[0]
+            ResultPath: $.data.lambdaresult
+            Type: Task
+
+          Brick Aggregation:
+            Type: Parallel
+            Next: Brick Combiner
+            ResultPath: $
+            OutputPath: $[0]
+            Branches:
+
+              - StartAt: Brick passRuntime
+                States:
+                  Brick passRuntime:
+                    Type: Pass
+                    End: true
+
+              - StartAt: Brick County Total
+                States:
+                  Brick County Total:
+                    Type: Task
+                    InputPath: $
+                    Parameters:
+                      RuntimeVariables:
+                        run_id.$: $.run_id
+                        aggregation_type.$: $.aggregation_type[1]
+                        aggregated_column.$: $.aggregated_column[1]
+                        cell_total_column.$: $.cell_total_column[0]
+                        total_columns.$: $.total_columns[1]
+                        additional_aggregated_column.$: $.additional_aggregated_column[1]
+                        queue_url.$: $.queue_url
+                        in_file_name:
+                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
+                    Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
+                    End: true
+
+              - StartAt: Brick EntRef Count
+                States:
+                  Brick EntRef Count:
+                    Type: Task
+                    InputPath: $
+                    Parameters:
+                      RuntimeVariables:
+                        run_id.$: $.run_id
+                        aggregation_type.$: $.aggregation_type[0]
+                        aggregated_column.$: $.aggregated_column[1]
+                        cell_total_column.$: $.cell_total_column[1]
+                        total_columns.$: $.total_columns[0]
+                        additional_aggregated_column.$: $.additional_aggregated_column[1]
+                        queue_url.$: $.queue_url
+                        in_file_name:
+                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
+                    Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
+                    End: true
+
+              - StartAt: Brick Calculate Top2
+                States:
+                  Brick Calculate Top2:
+                    Type: Task
+                    InputPath: $
+                    Parameters:
+                      RuntimeVariables:
+                        run_id.$: $.run_id
+                        aggregated_column.$: $.aggregated_column[1]
+                        additional_aggregated_column.$: $.additional_aggregated_column[1]
+                        top1_column.$: $.top1_column
+                        top2_column.$: $.top2_column
+                        total_columns.$: $.total_columns[1]
+                        queue_url.$: $.queue_url
+                        in_file_name:
+                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
+                    Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"  # yamllint disable-line rule:line-length
+                    End: true
+
+          Brick Combiner:
+            Next: Brick Disclosure
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"  # yamllint disable-line rule:line-length
+            ResultPath: $.data.lambdaresult
+            OutputPath: $
+            InputPath: $
+            Parameters:
+              RuntimeVariables:
+                run_id.$: $.run_id
+                aggregated_column.$: $.aggregated_column[1]
+                additional_aggregated_column.$: $.additional_aggregated_column[1]
+                queue_url.$: $.queue_url
+                in_file_name:
+                  aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
+            Type: Task
+
+          Brick Disclosure:
+            Next: Success
+            Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-wrangler}"  # yamllint disable-line rule:line-length
+            InputPath: $
+            Parameters:
+              RuntimeVariables:
+                run_id.$: $.run_id
+                disclosivity_marker.$: $.disclosivity_marker
+                publishable_indicator.$: $.publishable_indicator
+                explanation.$: $.explanation
+                total_columns.$: $.total_columns[1]
+                parent_column.$: $.parent_column
+                threshold.$: $.threshold
+                cell_total_column.$: $.cell_total_column[1]
+                top1_column.$: $.top1_column
+                top2_column.$: $.top2_column
+                stage5_threshold.$: $.stage5_threshold
+                disclosure_stages.$: $.disclosure_stages
+                queue_url.$: $.queue_url
+                out_file_name.$: $.out_file_name.disclosure[1]
             ResultPath: $.data.lambdaresult
             Type: Task
 

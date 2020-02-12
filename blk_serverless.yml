@@ -57,7 +57,6 @@ stepFunctions:
               distinct_values.$: $.distinct_values
               explanation.$: $.explanation
               run_id.$: $.run_id
-              parent_column.$: $.parent_column
               period.$: $.period
               periodicity.$: $.periodicity
               period_column.$: $.period_column
@@ -411,9 +410,9 @@ stepFunctions:
                 publishable_indicator.$: $.publishable_indicator
                 explanation.$: $.explanation
                 total_columns.$: $.total_columns[1]
-                parent_column.$: $.parent_column
+                parent_column.$: $.cell_total_column[1]
                 threshold.$: $.threshold
-                cell_total_column.$: $.cell_total_column[1]
+                cell_total_column.$: $.cell_total_column[0]
                 top1_column.$: $.top1_column
                 top2_column.$: $.top2_column
                 stage5_threshold.$: $.stage5_threshold

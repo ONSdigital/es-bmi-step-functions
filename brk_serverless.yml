@@ -58,7 +58,6 @@ stepFunctions:
               distinct_values.$: $.distinct_values
               explanation.$: $.explanation
               run_id.$: $.run_id
-              parent_column.$: $.parent_column
               period.$: $.period
               periodicity.$: $.periodicity
               period_column.$: $.period_column
@@ -320,7 +319,7 @@ stepFunctions:
                         run_id.$: $.run_id
                         aggregation_type.$: $.aggregation_type[1]
                         aggregated_column.$: $.aggregated_column[0]
-                        cell_total_column.$: $.cell_total_column[2]
+                        cell_total_column.$: $.cell_total_column[0]
                         total_columns.$: $.total_columns[1]
                         additional_aggregated_column.$: $.additional_aggregated_column[0]
                         queue_url.$: $.queue_url
@@ -394,9 +393,9 @@ stepFunctions:
                 publishable_indicator.$: $.publishable_indicator
                 explanation.$: $.explanation
                 total_columns.$: $.total_columns[1]
-                parent_column.$: $.parent_column
+                parent_column.$: $.cell_total_column[1]
                 threshold.$: $.threshold
-                cell_total_column.$: $.cell_total_column[1]
+                cell_total_column.$: $.cell_total_column[0]
                 top1_column.$: $.top1_column
                 top2_column.$: $.top2_column
                 stage5_threshold.$: $.stage5_threshold
@@ -503,9 +502,9 @@ stepFunctions:
                 publishable_indicator.$: $.publishable_indicator
                 explanation.$: $.explanation
                 total_columns.$: $.total_columns[1]
-                parent_column.$: $.parent_column
+                parent_column.$: $.cell_total_column[1]
                 threshold.$: $.threshold
-                cell_total_column.$: $.cell_total_column[1]
+                cell_total_column.$: $.cell_total_column[0]
                 top1_column.$: $.top1_column
                 top2_column.$: $.top2_column
                 stage5_threshold.$: $.stage5_threshold

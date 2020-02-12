@@ -62,7 +62,6 @@ stepFunctions:
               lookups.$: $.lookups
               marine_mismatch_check.$: $.marine_mismatch_check
               movement_type.$: $.movement_type
-              parent_column.$: $.parent_column
               period.$: $.period
               periodicity.$: $.periodicity
               period_column.$: $.period_column
@@ -432,7 +431,7 @@ stepFunctions:
                 publishable_indicator.$: $.publishable_indicator
                 explanation.$: $.explanation
                 total_columns.$: $.total_columns[1]
-                parent_column.$: $.parent_column
+                parent_column.$: $.cell_total_column[1]
                 threshold.$: $.threshold
                 cell_total_column.$: $.cell_total_column[0]
                 top1_column.$: $.top1_column

@@ -301,8 +301,11 @@ stepFunctions:
             Next: Region Combiner
             ResultPath: $
             OutputPath: $[0]
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             Branches:
-
               - StartAt: passRuntime
                 States:
                   passRuntime:
@@ -369,6 +372,10 @@ stepFunctions:
           Region Combiner:
             Next: Region Disclosure
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"  # yamllint disable-line rule:line-length
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             ResultPath: $.data.lambdaresult
             OutputPath: $
             InputPath: $
@@ -385,6 +392,10 @@ stepFunctions:
           Region Disclosure:
             Next: Brick Aggregation
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-wrangler}"  # yamllint disable-line rule:line-length
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             InputPath: $
             Parameters:
               RuntimeVariables:
@@ -410,8 +421,11 @@ stepFunctions:
             Next: Brick Combiner
             ResultPath: $
             OutputPath: $[0]
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             Branches:
-
               - StartAt: Brick passRuntime
                 States:
                   Brick passRuntime:
@@ -478,6 +492,10 @@ stepFunctions:
           Brick Combiner:
             Next: Brick Disclosure
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"  # yamllint disable-line rule:line-length
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             ResultPath: $.data.lambdaresult
             OutputPath: $
             InputPath: $
@@ -494,6 +512,10 @@ stepFunctions:
           Brick Disclosure:
             Next: Success
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-wrangler}"  # yamllint disable-line rule:line-length
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             InputPath: $
             Parameters:
               RuntimeVariables:

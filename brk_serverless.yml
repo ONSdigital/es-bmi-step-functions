@@ -324,7 +324,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[0]
                         cell_total_column.$: $.cell_total_column[0]
                         total_columns.$: $.total_columns[1]
-                        additional_aggregated_column.$: $.additional_aggregated_column[0]
+                        additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
                         in_file_name:
                           aggregation_by_column.$: $.in_file_name.aggregation_by_column[1]
@@ -343,7 +343,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[0]
                         cell_total_column.$: $.cell_total_column[1]
                         total_columns.$: $.total_columns[0]
-                        additional_aggregated_column.$: $.additional_aggregated_column[0]
+                        additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
                         in_file_name:
                           aggregation_by_column.$: $.in_file_name.aggregation_by_column[1]
@@ -359,7 +359,7 @@ stepFunctions:
                       RuntimeVariables:
                         run_id.$: $.run_id
                         aggregated_column.$: $.aggregated_column[0]
-                        additional_aggregated_column.$: $.additional_aggregated_column[0]
+                        additional_aggregated_column.$: $.additional_aggregated_column
                         top1_column.$: $.top1_column
                         top2_column.$: $.top2_column
                         total_columns.$: $.total_columns[1]
@@ -383,7 +383,7 @@ stepFunctions:
               RuntimeVariables:
                 run_id.$: $.run_id
                 aggregated_column.$: $.aggregated_column[0]
-                additional_aggregated_column.$: $.additional_aggregated_column[0]
+                additional_aggregated_column.$: $.additional_aggregated_column
                 queue_url.$: $.queue_url
                 in_file_name:
                   aggregation_by_column.$: $.in_file_name.aggregation_by_column[1]
@@ -400,6 +400,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 run_id.$: $.run_id
+                unique_identifier.$: $.unique_identifier[1:]
                 disclosivity_marker.$: $.disclosivity_marker
                 publishable_indicator.$: $.publishable_indicator
                 explanation.$: $.explanation
@@ -444,7 +445,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[1]
                         cell_total_column.$: $.cell_total_column[0]
                         total_columns.$: $.total_columns[1]
-                        additional_aggregated_column.$: $.additional_aggregated_column[1]
+                        additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
                         in_file_name:
                           aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
@@ -463,7 +464,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[1]
                         cell_total_column.$: $.cell_total_column[1]
                         total_columns.$: $.total_columns[0]
-                        additional_aggregated_column.$: $.additional_aggregated_column[1]
+                        additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
                         in_file_name:
                           aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
@@ -479,7 +480,7 @@ stepFunctions:
                       RuntimeVariables:
                         run_id.$: $.run_id
                         aggregated_column.$: $.aggregated_column[1]
-                        additional_aggregated_column.$: $.additional_aggregated_column[1]
+                        additional_aggregated_column.$: $.additional_aggregated_column
                         top1_column.$: $.top1_column
                         top2_column.$: $.top2_column
                         total_columns.$: $.total_columns[1]
@@ -503,7 +504,7 @@ stepFunctions:
               RuntimeVariables:
                 run_id.$: $.run_id
                 aggregated_column.$: $.aggregated_column[1]
-                additional_aggregated_column.$: $.additional_aggregated_column[1]
+                additional_aggregated_column.$: $.additional_aggregated_column
                 queue_url.$: $.queue_url
                 in_file_name:
                   aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
@@ -520,6 +521,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 run_id.$: $.run_id
+                unique_identifier.$: $.unique_identifier[:2]
                 disclosivity_marker.$: $.disclosivity_marker
                 publishable_indicator.$: $.publishable_indicator
                 explanation.$: $.explanation

@@ -406,6 +406,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 run_id.$: $.run_id
+                unique_identifier.$: $.unique_identifier
                 disclosivity_marker.$: $.disclosivity_marker
                 publishable_indicator.$: $.publishable_indicator
                 explanation.$: $.explanation

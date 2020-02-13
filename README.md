@@ -33,6 +33,17 @@ Module Order:
 8. Imputation calculate factors
 9. Imputation apply factors
 
+## Bricks
+Module Order:
+1. Enrichment
+2. Imputation movement
+3. Imputation means
+4. Imputation IQRS
+5. Imputation atypicals
+6. Imputation re-calculate means
+7. Imputation calculate factors
+8. Imputation apply factors
+
 ## Deployment:
 
 When a change is made and pushed to master this will deploy, the pipeline is set-up in a way

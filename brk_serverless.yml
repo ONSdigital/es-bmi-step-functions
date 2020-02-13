@@ -90,7 +90,7 @@ stepFunctions:
               - Next: Enrichment
                 NumericEquals: 1
                 Variable: $.RuntimeVariables.checkpoint
-              - Next: Imputation Calculate Movements  # This has been done to allow for uniformity across BMI surveys and prevent the system falling over if they put in the strata checkpoint. # yamllint disable-line rule:line-length
+              - Next: Imputation Calculate Movements
                 NumericEquals: 2
                 Variable: $.RuntimeVariables.checkpoint
               - Next: Imputation Calculate Movements

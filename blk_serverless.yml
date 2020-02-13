@@ -78,6 +78,7 @@ stepFunctions:
               marine_mismatch_check.$: $.marine_mismatch_check
               incoming_message_group.$: $.incoming_message_group
               out_file_name.$: $.out_file_name
+              unique_identifier.$: $.unique_identifier
             Type: Pass
 
           Choice State:

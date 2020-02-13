@@ -79,6 +79,7 @@ stepFunctions:
               top2_column.$: $.top2_column
               total_columns.$: $.total_columns
               out_file_name.$: $.out_file_name
+              unique_identifier.$: $.unique_identifier
             Type: Pass
 
           Choice State:

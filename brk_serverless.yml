@@ -288,6 +288,8 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                total_columns.$: $.total_columns
+                unique_identifier.$: $.unique_identifier
                 run_id.$: $.run_id
                 in_file_name.$: $.in_file_name
                 incoming_message_group.$: $.incoming_message_group

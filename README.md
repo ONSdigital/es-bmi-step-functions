@@ -136,5 +136,4 @@ Due to the way in which Serverless acts with our CI/CD pipeline means that the o
 requires a serverless.yml file to mark it as a Serverless directory, Without this our scripts fail. 
 
 This is why there is a generic template filler for Serverless.yml in the directory.
-=======
 

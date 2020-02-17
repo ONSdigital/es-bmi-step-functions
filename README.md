@@ -12,26 +12,62 @@ in the respective systems config files, located on AWS in the Results bucket ins
 Module Order:
 1. Enrichment
 2. Strata
-3. Imputation movement
-4. Imputation add GB region
-5. Imputation means
+3. Imputation Movement
+4. Imputation Add GB Region
+5. Imputation Means
 6. Imputation IQRS
-7. Imputation atypicals
-8. Imputation re-calculate means
-9. Imputation calculate factors
-10. Imputation apply factors
+7. Imputation Atypicals
+8. Imputation Re-Calculate Means
+9. Imputation Calculate Factors
+10. Imputation Apply Factors
+11. Aggregation
+    a. County Total (aggregate by column)
+    b. EntRef Count (aggregate by column)
+    c. Calculate Top2
+12. Combiner
+13. Disclosure 
 
 ## Blocks
 Module Order:
 1. Enrichment
-2. Imputation movement
-3. Imputation means
+2. Imputation Movement
+3. Imputation Means
 4. Imputation IQRS
-5. Imputation atypicals
-6. Imputation add GB region
-7. Imputation re-calculate means
-8. Imputation calculate factors
-9. Imputation apply factors
+5. Imputation Atypicals
+6. Imputation Add GB Region
+7. Imputation Re-Calculate Means
+8. Imputation Calculate Factors
+9. Imputation Apply Factors
+10. Aggregation
+    a. County Total (aggregate by column)
+    b. EntRef Count (aggregate by column)
+    c. Calculate Top2
+11. Combiner
+12. Disclosure 
+
+## Bricks
+Module Order: 
+1. Enrichment
+2. Imputation Movement
+3. Imputation Means
+4. Imputation IQRS
+5. Imputation Atypicals
+6. Imputation Re-Calculate Means
+7. Imputation Calculate Factors
+8. Imputation Apply Factors
+9. Re-Organise Data (calls out to add GB region)
+10. Region Aggregation
+    a. Region County Total (aggregate by column)
+    b. Region EntRef Count (aggregate by column)
+    c. Region Calculate Top2
+11. Region Combiner
+12. Region Disclosure
+13. Brick Aggregation
+    a. Brick County Total (aggregate by column)
+    b. Brick EntRef Count (aggregate by column)
+    c. Brick Calculate Top2
+14. Brick Combiner
+15. Brick Disclosure
 
 ## Deployment:
 
@@ -83,3 +119,10 @@ while section and also the way in which the variables are picked up from the res
 
 The implementation used inside of the step function can be found at: 
 https://collaborate2.ons.gov.uk/confluence/display/ESD/Spike+-+Step+Function%3A+InputPath+and+Parameters
+
+## Good to knows / Gotchas:
+Due to the way in which Serverless acts with our CI/CD pipeline means that the our directory
+requires a serverless.yml file to mark it as a Serverless directory, Without this our scripts fail. 
+
+This is why there is a generic template filler for Serverless.yml in the directory.
+

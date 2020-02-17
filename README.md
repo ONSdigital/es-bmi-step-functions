@@ -20,6 +20,12 @@ Module Order:
 8. Imputation re-calculate means
 9. Imputation calculate factors
 10. Imputation apply factors
+11. aggregation
+    a. County Total (aggregate by column)
+    b. EntRef Count (aggregate by column)
+    c. Calculate Top2
+12. Combiner
+13. Disclosure 
 
 ## Blocks
 Module Order:
@@ -32,6 +38,36 @@ Module Order:
 7. Imputation re-calculate means
 8. Imputation calculate factors
 9. Imputation apply factors
+10. aggregation
+    a. County Total (aggregate by column)
+    b. EntRef Count (aggregate by column)
+    c. Calculate Top2
+11. Combiner
+12. Disclosure 
+
+## Bricks
+Module Order: 
+1. Enrichment
+2. Imputation movement
+3. Imputation means
+4. Imputation IQRS
+5. Imputation atypicals
+6. Imputation re-calculate means
+7. Imputation calculate factors
+8. Imputation apply factors
+9. Re-organise data (calls out to add GB region)
+10. Region aggregation
+    a. Region county total (aggregate by column)
+    b. Region entref count (aggregate by column)
+    c. Region calculate top2
+11. Region combiner
+12. Region disclosure
+13. Brick aggregation
+    a. Brick county total (aggregate by column)
+    b. Brick entref count (aggregate by column)
+    c. Brick calculate top2
+14. Brick combiner
+15. Brick disclosure
 
 ## Deployment:
 
@@ -83,3 +119,9 @@ while section and also the way in which the variables are picked up from the res
 
 The implementation used inside of the step function can be found at: 
 https://collaborate2.ons.gov.uk/confluence/display/ESD/Spike+-+Step+Function%3A+InputPath+and+Parameters
+
+## Good to knows / Gotchas:
+Due to the way in which Serverless acts with our CI/CD pipeline means that the our directory
+requires a serverless.yml file to mark it as a Serverless directory, Without this our scripts fail. 
+
+This is why there is a generic template filler for Serverless.yml in the directory.

@@ -58,7 +58,6 @@ stepFunctions:
               distinct_values.$: $.distinct_values
               explanation.$: $.explanation
               run_id.$: $.run_id
-              parent_column.$: $.parent_column
               period.$: $.period
               periodicity.$: $.periodicity
               period_column.$: $.period_column
@@ -80,6 +79,7 @@ stepFunctions:
               marine_mismatch_check.$: $.marine_mismatch_check
               incoming_message_group.$: $.incoming_message_group
               out_file_name.$: $.out_file_name
+              unique_identifier.$: $.unique_identifier
             Type: Pass
 
           Choice State:
@@ -90,8 +90,7 @@ stepFunctions:
               - Next: Enrichment
                 NumericEquals: 1
                 Variable: $.RuntimeVariables.checkpoint
-                # yamllint disable-line rule:line-length
-              - Next: Imputation Calculate Movements  # This has been done to allow for uniformity across BMI surveys and prevent the system falling over if they put in the strata checkpoint.
+              - Next: Imputation Calculate Movements
                 NumericEquals: 2
                 Variable: $.RuntimeVariables.checkpoint
               - Next: Imputation Calculate Movements
@@ -302,8 +301,11 @@ stepFunctions:
             Next: Region Combiner
             ResultPath: $
             OutputPath: $[0]
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             Branches:
-
               - StartAt: passRuntime
                 States:
                   passRuntime:
@@ -320,9 +322,9 @@ stepFunctions:
                         run_id.$: $.run_id
                         aggregation_type.$: $.aggregation_type[1]
                         aggregated_column.$: $.aggregated_column[0]
-                        cell_total_column.$: $.cell_total_column[2]
+                        cell_total_column.$: $.cell_total_column[0]
                         total_columns.$: $.total_columns[1]
-                        additional_aggregated_column.$: $.additional_aggregated_column[0]
+                        additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
                         in_file_name:
                           aggregation_by_column.$: $.in_file_name.aggregation_by_column[1]
@@ -341,7 +343,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[0]
                         cell_total_column.$: $.cell_total_column[1]
                         total_columns.$: $.total_columns[0]
-                        additional_aggregated_column.$: $.additional_aggregated_column[0]
+                        additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
                         in_file_name:
                           aggregation_by_column.$: $.in_file_name.aggregation_by_column[1]
@@ -357,7 +359,7 @@ stepFunctions:
                       RuntimeVariables:
                         run_id.$: $.run_id
                         aggregated_column.$: $.aggregated_column[0]
-                        additional_aggregated_column.$: $.additional_aggregated_column[0]
+                        additional_aggregated_column.$: $.additional_aggregated_column
                         top1_column.$: $.top1_column
                         top2_column.$: $.top2_column
                         total_columns.$: $.total_columns[1]
@@ -370,6 +372,10 @@ stepFunctions:
           Region Combiner:
             Next: Region Disclosure
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"  # yamllint disable-line rule:line-length
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             ResultPath: $.data.lambdaresult
             OutputPath: $
             InputPath: $
@@ -377,7 +383,7 @@ stepFunctions:
               RuntimeVariables:
                 run_id.$: $.run_id
                 aggregated_column.$: $.aggregated_column[0]
-                additional_aggregated_column.$: $.additional_aggregated_column[0]
+                additional_aggregated_column.$: $.additional_aggregated_column
                 queue_url.$: $.queue_url
                 in_file_name:
                   aggregation_by_column.$: $.in_file_name.aggregation_by_column[1]
@@ -386,17 +392,22 @@ stepFunctions:
           Region Disclosure:
             Next: Brick Aggregation
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-wrangler}"  # yamllint disable-line rule:line-length
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             InputPath: $
             Parameters:
               RuntimeVariables:
                 run_id.$: $.run_id
+                unique_identifier.$: $.unique_identifier[1:]
                 disclosivity_marker.$: $.disclosivity_marker
                 publishable_indicator.$: $.publishable_indicator
                 explanation.$: $.explanation
                 total_columns.$: $.total_columns[1]
-                parent_column.$: $.parent_column
+                parent_column.$: $.cell_total_column[1]
                 threshold.$: $.threshold
-                cell_total_column.$: $.cell_total_column[1]
+                cell_total_column.$: $.cell_total_column[0]
                 top1_column.$: $.top1_column
                 top2_column.$: $.top2_column
                 stage5_threshold.$: $.stage5_threshold
@@ -411,8 +422,11 @@ stepFunctions:
             Next: Brick Combiner
             ResultPath: $
             OutputPath: $[0]
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             Branches:
-
               - StartAt: Brick passRuntime
                 States:
                   Brick passRuntime:
@@ -431,7 +445,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[1]
                         cell_total_column.$: $.cell_total_column[0]
                         total_columns.$: $.total_columns[1]
-                        additional_aggregated_column.$: $.additional_aggregated_column[1]
+                        additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
                         in_file_name:
                           aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
@@ -450,7 +464,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[1]
                         cell_total_column.$: $.cell_total_column[1]
                         total_columns.$: $.total_columns[0]
-                        additional_aggregated_column.$: $.additional_aggregated_column[1]
+                        additional_aggregated_column.$: $.additional_aggregated_column
                         queue_url.$: $.queue_url
                         in_file_name:
                           aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
@@ -466,7 +480,7 @@ stepFunctions:
                       RuntimeVariables:
                         run_id.$: $.run_id
                         aggregated_column.$: $.aggregated_column[1]
-                        additional_aggregated_column.$: $.additional_aggregated_column[1]
+                        additional_aggregated_column.$: $.additional_aggregated_column
                         top1_column.$: $.top1_column
                         top2_column.$: $.top2_column
                         total_columns.$: $.total_columns[1]
@@ -479,6 +493,10 @@ stepFunctions:
           Brick Combiner:
             Next: Brick Disclosure
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-combiner}"  # yamllint disable-line rule:line-length
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             ResultPath: $.data.lambdaresult
             OutputPath: $
             InputPath: $
@@ -486,7 +504,7 @@ stepFunctions:
               RuntimeVariables:
                 run_id.$: $.run_id
                 aggregated_column.$: $.aggregated_column[1]
-                additional_aggregated_column.$: $.additional_aggregated_column[1]
+                additional_aggregated_column.$: $.additional_aggregated_column
                 queue_url.$: $.queue_url
                 in_file_name:
                   aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
@@ -495,17 +513,22 @@ stepFunctions:
           Brick Disclosure:
             Next: Success
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.disclosure-wrangler}"  # yamllint disable-line rule:line-length
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             InputPath: $
             Parameters:
               RuntimeVariables:
                 run_id.$: $.run_id
+                unique_identifier.$: $.unique_identifier[:2]
                 disclosivity_marker.$: $.disclosivity_marker
                 publishable_indicator.$: $.publishable_indicator
                 explanation.$: $.explanation
                 total_columns.$: $.total_columns[1]
-                parent_column.$: $.parent_column
+                parent_column.$: $.cell_total_column[1]
                 threshold.$: $.threshold
-                cell_total_column.$: $.cell_total_column[1]
+                cell_total_column.$: $.cell_total_column[0]
                 top1_column.$: $.top1_column
                 top2_column.$: $.top2_column
                 stage5_threshold.$: $.stage5_threshold

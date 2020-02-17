@@ -130,7 +130,6 @@ while section and also the way in which the variables are picked up from the res
 
 The implementation used inside of the step function can be found at: 
 https://collaborate2.ons.gov.uk/confluence/display/ESD/Spike+-+Step+Function%3A+InputPath+and+Parameters
-<<<<<<< HEAD
 
 ## Good to knows / Gotchas:
 Due to the way in which Serverless acts with our CI/CD pipeline means that the our directory
@@ -138,4 +137,4 @@ requires a serverless.yml file to mark it as a Serverless directory, Without thi
 
 This is why there is a generic template filler for Serverless.yml in the directory.
 =======
->>>>>>> 7d2cdd2047e1588fca8400fd372b9494050bdc68
+

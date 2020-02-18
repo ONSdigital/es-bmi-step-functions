@@ -113,6 +113,8 @@ stepFunctions:
               RuntimeVariables:
                 run_id.$: $.run_id
                 queue_url.$: $.queue_url
+                period.$: $.period
+                periodicity.$: $.periodicity
             ResultPath: $.data.lambdaresult
             Type: Task
 

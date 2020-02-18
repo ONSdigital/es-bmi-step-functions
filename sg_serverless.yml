@@ -45,13 +45,12 @@ stepFunctions:
           Inputs:
             Next: Choice State
             Parameters:
-              RuntimeVariables:
-                checkpoint.$: $.checkpoint
               MessageStructure: json
               additional_aggregated_column.$: $.additional_aggregated_column
               aggregated_column.$: $.aggregated_column
               aggregation_type.$: $.aggregation_type
               cell_total_column.$: $.cell_total_column
+              checkpoint.$: $.checkpoint
               disclosure_stages.$: $.disclosure_stages
               disclosivity_marker.$: $.disclosivity_marker
               distinct_values.$: $.distinct_values
@@ -86,22 +85,22 @@ stepFunctions:
             Choices:
               - Next: Ingest
                 NumericEquals: 0
-                Variable: $.RuntimeVariables.checkpoint
+                Variable: $.checkpoint
               - Next: Enrichment
                 NumericEquals: 1
-                Variable: $.RuntimeVariables.checkpoint
+                Variable: $.checkpoint
               - Next: Strata
                 NumericEquals: 2
-                Variable: $.RuntimeVariables.checkpoint
+                Variable: $.checkpoint
               - Next: Imputation Calculate Movements
                 NumericEquals: 3
-                Variable: $.RuntimeVariables.checkpoint
+                Variable: $.checkpoint
               - Next: Aggregation
                 NumericEquals: 4
-                Variable: $.RuntimeVariables.checkpoint
+                Variable: $.checkpoint
               - Next: Disclosure
                 NumericEquals: 5
-                Variable: $.RuntimeVariables.checkpoint
+                Variable: $.checkpoint
             Type: Choice
 
           Ingest:

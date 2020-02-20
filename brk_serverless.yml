@@ -415,6 +415,7 @@ stepFunctions:
                 disclosure_stages.$: $.disclosure_stages
                 queue_url.$: $.queue_url
                 out_file_name.$: $.out_file_name.disclosure[0]
+                in_file_name.$: $.in_file_name
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -536,6 +537,7 @@ stepFunctions:
                 disclosure_stages.$: $.disclosure_stages
                 queue_url.$: $.queue_url
                 out_file_name.$: $.out_file_name.disclosure[1]
+                in_file_name.$: $.in_file_name
             ResultPath: $.data.lambdaresult
             Type: Task
 

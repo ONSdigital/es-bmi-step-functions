@@ -44,6 +44,10 @@ stepFunctions:
         States:
           Inputs:
             Next: Choice State
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             Parameters:
               MessageStructure: json
               additional_aggregated_column.$: $.additional_aggregated_column
@@ -82,6 +86,10 @@ stepFunctions:
             Type: Pass
 
           Choice State:
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             Choices:
               - Next: Ingest
                 NumericEquals: 0
@@ -108,6 +116,7 @@ stepFunctions:
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.ingest}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
+                ResultPath: $.error
                 Next: Failure
             Parameters:
               RuntimeVariables:
@@ -179,6 +188,10 @@ stepFunctions:
             Type: Task
 
           Should Imputation Run:
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             Choices:
               - BooleanEquals: true
                 Next: Calculate All-GB Region

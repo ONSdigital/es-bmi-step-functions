@@ -44,6 +44,10 @@ stepFunctions:
         States:
           Inputs:
             Next: Choice State
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             Parameters:
               MessageStructure: json
               lookups.$: $.lookups
@@ -102,6 +106,7 @@ stepFunctions:
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.ingest}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
+                ResultPath: $.error
                 Next: Failure
             Parameters:
               RuntimeVariables:
@@ -153,6 +158,10 @@ stepFunctions:
             Type: Task
 
           Should Imputation Run:
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
             Choices:
               - BooleanEquals: true
                 Next: Calculate Means
@@ -167,6 +176,7 @@ stepFunctions:
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-means}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
+                ResultPath: $.error
                 Next: Failure
             InputPath: $
             Parameters:
@@ -185,6 +195,7 @@ stepFunctions:
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-iqrs}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
+                ResultPath: $.error
                 Next: Failure
             InputPath: $
             Parameters:
@@ -203,6 +214,7 @@ stepFunctions:
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.imputation-atyps}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
+                ResultPath: $.error
                 Next: Failure
             Parameters:
               RuntimeVariables:
@@ -283,6 +295,7 @@ stepFunctions:
             Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-bricks-splitter}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
+                ResultPath: $.error
                 Next: Failure
             InputPath: $
             Parameters:

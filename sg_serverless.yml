@@ -56,8 +56,7 @@ stepFunctions:
               distinct_values.$: $.distinct_values
               explanation.$: $.explanation
               factors_parameters.$: $.factors_parameters
-              in_file_name.$: $.in_file_name
-              incoming_message_group.$: $.incoming_message_group
+              file_names.$: $.in_file_name
               lookups.$: $.lookups
               marine_mismatch_check.$: $.marine_mismatch_check
               movement_type.$: $.movement_type
@@ -67,7 +66,6 @@ stepFunctions:
               publishable_indicator.$: $.publishable_indicator
               queue_url.$: $.queue_url
               questions_list.$: $.questions_list
-              raw_input_file.$: $.raw_input_file
               run_id.$: $.run_id
               stage5_threshold.$: $.stage5_threshold
               sum_columns.$: $.sum_columns
@@ -77,7 +75,6 @@ stepFunctions:
               top1_column.$: $.top1_column
               top2_column.$: $.top2_column
               total_columns.$: $.total_columns
-              out_file_name.$: $.out_file_name
               unique_identifier.$: $.unique_identifier
             Type: Pass
 
@@ -111,10 +108,12 @@ stepFunctions:
                 Next: Failure
             Parameters:
               RuntimeVariables:
-                run_id.$: $.run_id
-                queue_url.$: $.queue_url
+                in_file_name.$: $.file_names.input_file
+                out_file_name.$: $.file_names.ingest
                 period.$: $.period
                 periodicity.$: $.periodicity
+                queue_url.$: $.queue_url
+                run_id.$: $.run_id
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -128,12 +127,15 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                run_id.$: $.run_id
+                in_file_name.$: $.file_names.ingest
+                incoming_message_group_id.$: $.file_names.ingest
                 lookups.$: $.lookups
-                survey_column.$: $.survey_column
-                queue_url.$: $.queue_url
-                in_file_name.$: $.in_file_name
+                out_file_name.$: $.file_names.enrichment
+                outgoing_message_group_id.$: $.file_names.enrichment
                 marine_mismatch_check.$: $.marine_mismatch_check
+                queue_url.$: $.queue_url
+                run_id.$: $.run_id
+                survey_column.$: $.survey_column
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -147,12 +149,15 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                run_id.$: $.run_id
-                survey_column.$: $.survey_column
                 distinct_values.$: $.distinct_values
+                in_file_name.$: $.file_names.enrichment
+                incoming_message_group_id.$: $.file_names.enrichment
+                out_file_name.$: $.file_names.strata
+                outgoing_message_group_id.$: $.file_names.strata
                 period.$: $.period
                 queue_url.$: $.queue_url
-                in_file_name.$: $.in_file_name
+                run_id.$: $.run_id
+                survey_column.$: $.survey_column
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -166,15 +171,21 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
-                run_id.$: $.run_id
+                current_data.$: $.file_names.current_data
+                in_file_name.$: $.file_names.strata
+                incoming_message_group_id.$: $.file_names.strata
+                out_file_name.$: $.file_names.imputation_calculate_movement
+                out_file_name_skip.$: $.file_names.imputation_apply_factors_out
+                outgoing_message_group_id.$: $.file_names.imputation_calculate_movement
+                outgoing_message_group_id.skip.$: $.file_names.imputation_apply_factors_out # yamllint disable-line rule:line-length
                 movement_type.$: $.movement_type
                 period.$: $.period
-                periodicity.$: $.periodicity
                 period_column.$: $.period_column
-                queue_url.$: $.queue_url
+                periodicity.$: $.periodicity
+                previous_data.$: $.file_names.previous_data
                 questions_list.$: $.questions_list
+                queue_url.$: $.queue_url
+                run_id.$: $.run_id
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -198,11 +209,13 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
-                run_id.$: $.run_id
                 factors_parameters.$: $.factors_parameters
+                in_file_name.$: $.file_names.imputation_calculate_movement
+                incoming_message_group_id.$: $.file_names.imputation_calculate_movement
+                out_file_name.$: $.file_names.add_gb_region
+                outgoing_message_group_id.$: $.file_names.add_gb_region
                 queue_url.$: $.queue_url
+                run_id.$: $.run_id
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -216,12 +229,14 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
-                run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
-                queue_url.$: $.queue_url
+                in_file_name.$: $.file_names.add_gb_region
+                incoming_message_group_id.$: $.file_names.add_gb_region
+                out_file_name.$: $.file_names.imputation_calculate_means
+                outgoing_message_group_id.$: $.file_names.imputation_calculate_means
                 questions_list.$: $.questions_list
+                queue_url.$: $.queue_url
+                run_id.$: $.run_id
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -235,12 +250,14 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
-                run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
-                queue_url.$: $.queue_url
+                in_file_name.$: $.file_names.imputation_calculate_means
+                incoming_message_group_id.$: $.file_names.imputation_calculate_means
+                out_file_name.$: $.file_names.imputation_iqrs
+                outgoing_message_group_id.$: $.file_names.imputation_iqrs
                 questions_list.$: $.questions_list
+                queue_url.$: $.queue_url
+                run_id.$: $.run_id
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -253,11 +270,13 @@ stepFunctions:
                 Next: Failure
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
-                run_id.$: $.run_id
-                queue_url.$: $.queue_url
+                in_file_name.$: $.file_names.imputation_iqrs
+                incoming_message_group_id.$: $.file_names.imputation_iqrs
+                out_file_name.$: $.file_names.imputation_atypicals
+                outgoing_message_group_id.$: $.file_names.imputation_atypicals
                 questions_list.$: $.questions_list
+                queue_url.$: $.queue_url
+                run_id.$: $.run_id
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -271,12 +290,14 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
-                run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
-                queue_url.$: $.queue_url
+                in_file_name.$: $.file_names.imputation_atypicals
+                incoming_message_group_id.$: $.file_names.imputation_atypicals
+                out_file_name.$: $.file_names.imputation_recalculate_means
+                outgoing_message_group_id.$: $.file_names.imputation_recalculate_means
                 questions_list.$: $.questions_list
+                queue_url.$: $.queue_url
+                run_id.$: $.run_id
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -290,15 +311,17 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
-                run_id.$: $.run_id
                 distinct_values.$: $.distinct_values
+                factors_parameters.$: $.factors_parameters
+                in_file_name.$: $.file_names.imputation_recalculate_means
+                incoming_message_group_id.$: $.file_names.imputation_recalculate_means
+                out_file_name.$: $.file_names.imputation_calculate_factors
+                outgoing_message_group_id.$: $.file_names.imputation_calculate_factors
                 period.$: $.period
                 period_column.$: $.period_column
-                factors_parameters.$: $.factors_parameters
-                queue_url.$: $.queue_url
                 questions_list.$: $.questions_list
+                queue_url.$: $.queue_url
+                run_id.$: $.run_id
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -312,17 +335,20 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                in_file_name.$: $.in_file_name
-                incoming_message_group.$: $.incoming_message_group
-                run_id.$: $.run_id
+                current_data.$: $.file_names.current_data
                 distinct_values.$: $.distinct_values
-                sum_columns.$: $.sum_columns
+                factors_parameters.$: $.factors_parameters
+                in_file_name.$: $.file_names.imputation_calculate_factors
+                incoming_message_group_id.$: $.file_names.imputation_calculate_factors
+                out_file_name.$: $.file_names.imputation_apply_factors
+                outgoing_message_group_id.$: $.file_names.imputation_apply_factors
                 period.$: $.period
                 period_column.$: $.period_column
-                factors_parameters.$: $.factors_parameters
-                raw_input_file.$: $.raw_input_file
-                queue_url.$: $.queue_url
+                previous_data.$: $.file_names.previous_data
                 questions_list.$: $.questions_list
+                queue_url.$: $.queue_url
+                run_id.$: $.run_id
+                sum_columns.$: $.sum_columns
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -349,15 +375,17 @@ stepFunctions:
                     InputPath: $
                     Parameters:
                       RuntimeVariables:
-                        run_id.$: $.run_id
-                        aggregation_type.$: $.aggregation_type[1]
-                        aggregated_column.$: $.aggregated_column
-                        cell_total_column.$: $.cell_total_column[0]
-                        total_columns.$: $.total_columns[1]
                         additional_aggregated_column.$: $.additional_aggregated_column
+                        aggregated_column.$: $.aggregated_column
+                        aggregation_type.$: $.aggregation_type[1]
+                        cell_total_column.$: $.cell_total_column[0]
+                        in_file_name.$: $.file_names.imputation_apply_factors
+                        incoming_message_group_id.$: $.file_names.imputation_apply_factors
+                        out_file_name.$: $.file_names.aggregation_by_column
+                        outgoing_message_group_id.$: $.file_names.aggregation_by_column
                         queue_url.$: $.queue_url
-                        in_file_name:
-                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
+                        run_id.$: $.run_id
+                        total_columns.$: $.total_columns[1]
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -368,15 +396,17 @@ stepFunctions:
                     InputPath: $
                     Parameters:
                       RuntimeVariables:
-                        run_id.$: $.run_id
-                        aggregation_type.$: $.aggregation_type[0]
-                        aggregated_column.$: $.aggregated_column
-                        cell_total_column.$: $.cell_total_column[1]
-                        total_columns.$: $.total_columns[0]
                         additional_aggregated_column.$: $.additional_aggregated_column
+                        aggregated_column.$: $.aggregated_column
+                        aggregation_type.$: $.aggregation_type[0]
+                        cell_total_column.$: $.cell_total_column[1]
+                        in_file_name.$: $.file_names.imputation_apply_factors
+                        incoming_message_group_id.$: $.file_names.imputation_apply_factors
+                        out_file_name.$: $.file_names.aggregation_ent_ref
+                        outgoing_message_group_id.$: $.file_names.aggregation_ent_ref
                         queue_url.$: $.queue_url
-                        in_file_name:
-                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
+                        run_id.$: $.run_id
+                        total_columns.$: $.total_columns[0]
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -387,15 +417,17 @@ stepFunctions:
                     InputPath: $
                     Parameters:
                       RuntimeVariables:
-                        run_id.$: $.run_id
-                        aggregated_column.$: $.aggregated_column
                         additional_aggregated_column.$: $.additional_aggregated_column
+                        aggregated_column.$: $.aggregated_column
+                        in_file_name.$: $.file_names.imputation_apply_factors
+                        incoming_message_group_id.$: $.file_names.imputation_apply_factors
+                        out_file_name.$: $.file_names.aggregation_top2
+                        outgoing_message_group_id.$: $.file_names.aggregation_top2
+                        queue_url.$: $.queue_url
+                        run_id.$: $.run_id
                         top1_column.$: $.top1_column
                         top2_column.$: $.top2_column
                         total_columns.$: $.total_columns[1]
-                        queue_url.$: $.queue_url
-                        in_file_name:
-                          aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -411,12 +443,14 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                run_id.$: $.run_id
-                aggregated_column.$: $.aggregated_column
                 additional_aggregated_column.$: $.additional_aggregated_column
+                aggregated_column.$: $.aggregated_column
+                in_file_name.$: $.file_names.imputation_apply_factors
+                incoming_message_group_id.$: $.file_names.imputation_apply_factors
+                out_file_name.$: $.file_names.aggregation_combiner
+                outgoing_message_group_id.$: $.file_names.aggregation_combiner
                 queue_url.$: $.queue_url
-                in_file_name:
-                  aggregation_by_column.$: $.in_file_name.aggregation_by_column[0]
+                run_id.$: $.run_id
             Type: Task
 
           Disclosure:
@@ -429,22 +463,24 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
-                run_id.$: $.run_id
-                unique_identifier.$: $.unique_identifier
-                disclosivity_marker.$: $.disclosivity_marker
-                publishable_indicator.$: $.publishable_indicator
-                explanation.$: $.explanation
-                total_columns.$: $.total_columns[1]
-                parent_column.$: $.cell_total_column[1]
-                threshold.$: $.threshold
                 cell_total_column.$: $.cell_total_column[0]
+                disclosivity_marker.$: $.disclosivity_marker
+                disclosure_stages.$: $.disclosure_stages
+                explanation.$: $.explanation
+                in_file_name.$: $.file_names.aggregation_combiner
+                incoming_message_group_id.$: $.file_names.aggregation_combiner
+                out_file_name.$: $.file_names.disclosure
+                outgoing_message_group_id.$: $.file_names.disclosure
+                parent_column.$: $.cell_total_column[1]
+                publishable_indicator.$: $.publishable_indicator
+                queue_url.$: $.queue_url
+                run_id.$: $.run_id
+                stage5_threshold.$: $.stage5_threshold
+                threshold.$: $.threshold
                 top1_column.$: $.top1_column
                 top2_column.$: $.top2_column
-                stage5_threshold.$: $.stage5_threshold
-                disclosure_stages.$: $.disclosure_stages
-                queue_url.$: $.queue_url
-                out_file_name.$: $.out_file_name.disclosure
-                in_file_name.$: $.in_file_name
+                total_columns.$: $.total_columns[1]
+                unique_identifier.$: $.unique_identifier
             ResultPath: $.data.lambdaresult
             Type: Task
 

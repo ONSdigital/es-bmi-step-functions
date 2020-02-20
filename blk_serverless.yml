@@ -43,10 +43,6 @@ stepFunctions:
         States:
           Inputs:
             Next: Choice State
-            Catch:
-              - ErrorEquals: [States.ALL]
-                ResultPath: $.error
-                Next: Failure
             Parameters:
               MessageStructure: json
               lookups.$: $.lookups
@@ -85,10 +81,6 @@ stepFunctions:
             Type: Pass
 
           Choice State:
-            Catch:
-              - ErrorEquals: [States.ALL]
-                ResultPath: $.error
-                Next: Failure
             Choices:
               - Next: Ingest
                 NumericEquals: 0
@@ -164,10 +156,6 @@ stepFunctions:
             Type: Task
 
           Should Imputation Run:
-            Catch:
-              - ErrorEquals: [States.ALL]
-                ResultPath: $.error
-                Next: Failure
             Choices:
               - BooleanEquals: true
                 Next: Calculate Means

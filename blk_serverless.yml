@@ -153,7 +153,7 @@ stepFunctions:
                 out_file_name.$: $.file_names.imputation_calculate_movement
                 out_file_name_skip.$: $.file_names.imputation_apply_factors
                 outgoing_message_group_id.$: $.file_names.imputation_calculate_movement
-                outgoing_message_group_id.skip.$: $.file_names.imputation_apply_factors  # yamllint disable-line rule:line-length
+                outgoing_message_group_id_skip.$: $.file_names.imputation_apply_factors  # yamllint disable-line rule:line-length
                 movement_type.$: $.movement_type
                 period.$: $.period
                 period_column.$: $.period_column

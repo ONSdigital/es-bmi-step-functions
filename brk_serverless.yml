@@ -128,7 +128,7 @@ stepFunctions:
                 out_file_name.$: $.file_names.enrichment
                 outgoing_message_group_id.$: $.file_names.enrichment
                 marine_mismatch_check.$: $.marine_mismatch_check
-                period_column.$: $.period_colum
+                period_column.$: $.period_column
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
                 survey_column.$: $.survey_column

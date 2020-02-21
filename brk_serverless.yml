@@ -105,6 +105,7 @@ stepFunctions:
               RuntimeVariables:
                 in_file_name.$: $.file_names.input_file
                 out_file_name.$: $.file_names.ingest
+                outgoing_message_group_id.$: $.file_names.ingest
                 period.$: $.period
                 periodicity.$: $.periodicity
                 queue_url.$: $.queue_url

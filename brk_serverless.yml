@@ -57,6 +57,7 @@ stepFunctions:
               explanation.$: $.explanation
               factors_parameters.$: $.factors_parameters
               file_names.$: $.file_names
+              location.$: $.location
               lookups.$: $.lookups
               marine_mismatch_check.$: $.marine_mismatch_check
               movement_type.$: $.movement_type
@@ -104,6 +105,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 in_file_name.$: $.file_names.input_file
+                location.$: $.location
                 out_file_name.$: $.file_names.ingest
                 outgoing_message_group_id.$: $.file_names.ingest
                 period.$: $.period
@@ -125,6 +127,7 @@ stepFunctions:
               RuntimeVariables:
                 in_file_name.$: $.file_names.ingest
                 incoming_message_group_id.$: $.file_names.ingest
+                location.$: $.location
                 lookups.$: $.lookups
                 out_file_name.$: $.file_names.enrichment
                 outgoing_message_group_id.$: $.file_names.enrichment
@@ -149,6 +152,7 @@ stepFunctions:
                 current_data.$: $.file_names.current_data
                 in_file_name.$: $.file_names.enrichment
                 incoming_message_group_id.$: $.file_names.enrichment
+                location.$: $.location
                 out_file_name.$: $.file_names.imputation_calculate_movement
                 out_file_name_skip.$: $.file_names.imputation_apply_factors
                 outgoing_message_group_id.$: $.file_names.imputation_calculate_movement
@@ -187,6 +191,7 @@ stepFunctions:
                 distinct_values.$: $.distinct_values
                 in_file_name.$: $.file_names.imputation_calculate_movement
                 incoming_message_group_id.$: $.file_names.imputation_calculate_movement
+                location.$: $.location
                 out_file_name.$: $.file_names.imputation_calculate_means
                 outgoing_message_group_id.$: $.file_names.imputation_calculate_means
                 questions_list.$: $.questions_list
@@ -208,6 +213,7 @@ stepFunctions:
                 distinct_values.$: $.distinct_values
                 in_file_name.$: $.file_names.imputation_calculate_means
                 incoming_message_group_id.$: $.file_names.imputation_calculate_means
+                location.$: $.location
                 out_file_name.$: $.file_names.imputation_iqrs
                 outgoing_message_group_id.$: $.file_names.imputation_iqrs
                 questions_list.$: $.questions_list
@@ -227,6 +233,7 @@ stepFunctions:
               RuntimeVariables:
                 in_file_name.$: $.file_names.imputation_iqrs
                 incoming_message_group_id.$: $.file_names.imputation_iqrs
+                location.$: $.location
                 out_file_name.$: $.file_names.imputation_atypicals
                 outgoing_message_group_id.$: $.file_names.imputation_atypicals
                 questions_list.$: $.questions_list
@@ -248,6 +255,7 @@ stepFunctions:
                 distinct_values.$: $.distinct_values
                 in_file_name.$: $.file_names.imputation_atypicals
                 incoming_message_group_id.$: $.file_names.imputation_atypicals
+                location.$: $.location
                 out_file_name.$: $.file_names.imputation_recalculate_means
                 outgoing_message_group_id.$: $.file_names.imputation_recalculate_means
                 questions_list.$: $.questions_list
@@ -270,6 +278,7 @@ stepFunctions:
                 factors_parameters.$: $.factors_parameters
                 in_file_name.$: $.file_names.imputation_recalculate_means
                 incoming_message_group_id.$: $.file_names.imputation_recalculate_means
+                location.$: $.location
                 out_file_name.$: $.file_names.imputation_calculate_factors
                 outgoing_message_group_id.$: $.file_names.imputation_calculate_factors
                 period.$: $.period
@@ -295,6 +304,7 @@ stepFunctions:
                 factors_parameters.$: $.factors_parameters
                 in_file_name.$: $.file_names.imputation_calculate_factors
                 incoming_message_group_id.$: $.file_names.imputation_calculate_factors
+                location.$: $.location
                 out_file_name.$: $.file_names.imputation_apply_factors
                 outgoing_message_group_id.$: $.file_names.imputation_apply_factors
                 period.$: $.period
@@ -320,6 +330,7 @@ stepFunctions:
                 factors_parameters.$: $.factors_parameters
                 in_file_name.$: $.file_names.imputation_apply_factors
                 incoming_message_group_id.$: $.file_names.imputation_apply_factors
+                location.$: $.location
                 out_file_name_bricks.$: $.file_names.aggregation_splitter[0]
                 out_file_name_region.$: $.file_names.aggregation_splitter[1]
                 queue_url.$: $.queue_url
@@ -358,6 +369,7 @@ stepFunctions:
                         cell_total_column.$: $.cell_total_column[0]
                         in_file_name.$: $.file_names.aggregation_splitter[1]
                         incoming_message_group_id.$: $.file_names.aggregation_splitter[1]
+                        location.$: $.location
                         out_file_name.$: $.file_names.aggregation_by_column[1]
                         outgoing_message_group_id.$: $.file_names.aggregation_by_column[1]
                         queue_url.$: $.queue_url
@@ -379,6 +391,7 @@ stepFunctions:
                         cell_total_column.$: $.cell_total_column[1]
                         in_file_name.$: $.file_names.aggregation_splitter[1]
                         incoming_message_group_id.$: $.file_names.aggregation_splitter[1]
+                        location.$: $.location
                         out_file_name.$: $.file_names.aggregation_ent_ref[1]
                         outgoing_message_group_id.$: $.file_names.aggregation_ent_ref[1]
                         queue_url.$: $.queue_url
@@ -398,6 +411,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[0]
                         in_file_name.$: $.file_names.aggregation_splitter[1]
                         incoming_message_group_id.$: $.file_names.aggregation_splitter[1]
+                        location.$: $.location
                         out_file_name.$: $.file_names.aggregation_top2[1]
                         outgoing_message_group_id.$: $.file_names.aggregation_top2[1]
                         queue_url.$: $.queue_url
@@ -424,6 +438,7 @@ stepFunctions:
                 aggregated_column.$: $.aggregated_column[0]
                 in_file_name.$: $.file_names.aggregation_splitter[1]
                 incoming_message_group_id.$: $.file_names.aggregation_splitter[1]
+                location.$: $.location
                 out_file_name.$: $.file_names.aggregation_combiner[1]
                 outgoing_message_group_id.$: $.file_names.aggregation_combiner[1]
                 queue_url.$: $.queue_url
@@ -446,6 +461,7 @@ stepFunctions:
                 explanation.$: $.explanation
                 in_file_name.$: $.file_names.aggregation_combiner[1]
                 incoming_message_group_id.$: $.file_names.aggregation_combiner[1]
+                location.$: $.location
                 out_file_name.$: $.file_names.disclosure[1]
                 outgoing_message_group_id.$: $.file_names.disclosure[1]
                 parent_column.$: $.cell_total_column[1]
@@ -490,6 +506,7 @@ stepFunctions:
                         cell_total_column.$: $.cell_total_column[0]
                         in_file_name.$: $.file_names.aggregation_splitter[0]
                         incoming_message_group_id.$: $.file_names.aggregation_splitter[0]
+                        location.$: $.location
                         out_file_name.$: $.file_names.aggregation_by_column[0]
                         outgoing_message_group_id.$: $.file_names.aggregation_by_column[0]
                         queue_url.$: $.queue_url
@@ -511,6 +528,7 @@ stepFunctions:
                         cell_total_column.$: $.cell_total_column[1]
                         in_file_name.$: $.file_names.aggregation_splitter[0]
                         incoming_message_group_id.$: $.file_names.aggregation_splitter[0]
+                        location.$: $.location
                         out_file_name.$: $.file_names.aggregation_ent_ref[0]
                         outgoing_message_group_id.$: $.file_names.aggregation_ent_ref[0]
                         queue_url.$: $.queue_url
@@ -530,6 +548,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[1]
                         in_file_name.$: $.file_names.aggregation_splitter[0]
                         incoming_message_group_id.$: $.file_names.aggregation_splitter[0]
+                        location.$: $.location
                         out_file_name.$: $.file_names.aggregation_top2[0]
                         outgoing_message_group_id.$: $.file_names.aggregation_top2[0]
                         queue_url.$: $.queue_url
@@ -556,6 +575,7 @@ stepFunctions:
                 aggregated_column.$: $.aggregated_column[1]
                 in_file_name.$: $.file_names.aggregation_splitter[0]
                 incoming_message_group_id.$: $.file_names.aggregation_splitter[0]
+                location.$: $.location
                 out_file_name.$: $.file_names.aggregation_combiner[0]
                 outgoing_message_group_id.$: $.file_names.aggregation_combiner[0]
                 queue_url.$: $.queue_url
@@ -578,6 +598,7 @@ stepFunctions:
                 explanation.$: $.explanation
                 in_file_name.$: $.file_names.aggregation_combiner[0]
                 incoming_message_group_id.$: $.file_names.aggregation_combiner[0]
+                location.$: $.location
                 out_file_name.$: $.file_names.disclosure[0]
                 outgoing_message_group_id.$: $.file_names.disclosure[0]
                 parent_column.$: $.cell_total_column[1]

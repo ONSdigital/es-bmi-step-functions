@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 cd es-bmi-step-functions-deploy-repository
-
+export SLS_DEBUG=1
 serverless plugin install --name serverless-step-functions
 echo Deploying Sand and Gravel to AWS...
 serverless deploy --config sg_serverless.yml --verbose;

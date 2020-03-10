@@ -12,7 +12,7 @@ provider:
 custom:
   accountId: ${env:aws_account_id}
 
-  wranglers: ${ssm:/aws/reference/secretsmanager/results-bmi-sg-wranglers~true}
+  wranglers: ${env:results_wranglers}
   ingest: ${self:custom.wranglers.ingest}
   enrichment: ${self:custom.wranglers.enrichment}
   strata: ${self:custom.wranglers.strata}

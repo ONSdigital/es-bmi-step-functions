@@ -12,7 +12,7 @@ provider:
 custom:
   accountId: ${env:aws_account_id}
 
-  wranglers: ${file(./wranglers.json)}
+  wranglers: ${file(../wranglers.json)}
   ingest: ${self:custom.wranglers.ingest}
   enrichment: ${self:custom.wranglers.enrichment}
   strata: ${self:custom.wranglers.strata}

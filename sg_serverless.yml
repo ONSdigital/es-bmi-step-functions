@@ -67,6 +67,7 @@ stepFunctions:
               queue_url.$: $.queue_url
               questions_list.$: $.questions_list
               run_id.$: $.run_id
+              sns_topic_arn.$: $.sns_topic_arn
               stage5_threshold.$: $.stage5_threshold
               sum_columns.$: $.sum_columns
               survey.$: $.survey
@@ -115,6 +116,7 @@ stepFunctions:
                 outgoing_message_group_id.$: $.file_names.ingest
                 period.$: $.period
                 periodicity.$: $.periodicity
+                sns_topic_arn.$: $.sns_topic_arn
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
             ResultPath: $.data.lambdaresult
@@ -141,6 +143,7 @@ stepFunctions:
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
                 survey_column.$: $.survey_column
+                sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -164,6 +167,7 @@ stepFunctions:
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
                 survey_column.$: $.survey_column
+                sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -193,6 +197,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
+                sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -224,6 +229,7 @@ stepFunctions:
                 outgoing_message_group_id.$: $.file_names.add_gb_region
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
+                sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -246,6 +252,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
+                sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -268,6 +275,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
+                sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -288,6 +296,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
+                sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -310,6 +319,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
+                sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -335,6 +345,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
+                sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -363,6 +374,7 @@ stepFunctions:
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
                 sum_columns.$: $.sum_columns
+                sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -401,6 +413,7 @@ stepFunctions:
                         queue_url.$: $.queue_url
                         run_id.$: $.run_id
                         total_columns.$: $.total_columns[1]
+                        sns_topic_arn.$: $.sns_topic_arn
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -423,6 +436,7 @@ stepFunctions:
                         queue_url.$: $.queue_url
                         run_id.$: $.run_id
                         total_columns.$: $.total_columns[0]
+                        sns_topic_arn.$: $.sns_topic_arn
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -445,6 +459,7 @@ stepFunctions:
                         top1_column.$: $.top1_column
                         top2_column.$: $.top2_column
                         total_columns.$: $.total_columns[1]
+                        sns_topic_arn.$: $.sns_topic_arn
                     Resource: "arn:aws:lambda:eu-west-2:${self:custom.accountId}:function:${self:custom.aggregation-top2}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -469,6 +484,7 @@ stepFunctions:
                 outgoing_message_group_id.$: $.file_names.aggregation_combiner
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
+                sns_topic_arn.$: $.sns_topic_arn
             Type: Task
 
           Disclosure:
@@ -500,6 +516,7 @@ stepFunctions:
                 top2_column.$: $.top2_column
                 total_columns.$: $.total_columns[1]
                 unique_identifier.$: $.unique_identifier
+                sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
 

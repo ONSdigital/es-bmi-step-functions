@@ -7,7 +7,7 @@ provider:
   package:
     individually: true
   deploymentBucket:
-    name: com.serverless.${self:provider.region}.results.ons.deploys
+    name: spp-results-sandbox-serverless
 
 stepFunctions:
   stateMachines:

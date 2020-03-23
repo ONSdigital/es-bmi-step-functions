@@ -197,6 +197,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
+                unique_identifier.$: $.unique_identifier
                 sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
@@ -373,6 +374,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
+                unique_identifier.$: $.unique_identifier
                 sum_columns.$: $.sum_columns
                 sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult

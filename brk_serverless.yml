@@ -136,6 +136,7 @@ stepFunctions:
                 period_column.$: $.period_column
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
+                unique_identifier.$: $.unique_identifier
                 survey_column.$: $.survey_column
                 sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
@@ -321,6 +322,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
+                unique_identifier.$: $.unique_identifier
                 sum_columns.$: $.sum_columns
                 sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult

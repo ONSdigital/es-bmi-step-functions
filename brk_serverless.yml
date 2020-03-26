@@ -347,7 +347,7 @@ stepFunctions:
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
                 total_columns.$: $.total_columns[1]
-                unique_identifier.$: $.unique_identifier
+                unique_identifier.$: $.unique_identifier[1:]
                 sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
@@ -489,7 +489,7 @@ stepFunctions:
                 top1_column.$: $.top1_column
                 top2_column.$: $.top2_column
                 total_columns.$: $.total_columns[1]
-                unique_identifier.$: $.unique_identifier[1:]
+                unique_identifier.$: $.unique_identifier[2:]
                 sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
@@ -631,7 +631,7 @@ stepFunctions:
                 top1_column.$: $.top1_column
                 top2_column.$: $.top2_column
                 total_columns.$: $.total_columns[1]
-                unique_identifier.$: $.unique_identifier[:2]
+                unique_identifier.$: $.unique_identifier[1:3]
                 sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task

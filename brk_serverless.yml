@@ -7,10 +7,10 @@ provider:
   package:
     individually: true
   deploymentBucket:
-    name: spp-results-sandbox-serverless
+    name: spp-results-${self:custom.environment}-serverless
 
 custom:
-  accountId: ${env:aws_account_id}
+  environment: ${env:ENVIRONMENT}
 
   wranglers: ${file(../wranglers.json)}
   ingest: ${self:custom.wranglers.ingest}

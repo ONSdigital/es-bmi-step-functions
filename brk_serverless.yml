@@ -652,3 +652,4 @@ stepFunctions:
 
 plugins:
   - serverless-step-functions
+  - serverless-pseudo-parameters

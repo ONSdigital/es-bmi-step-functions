@@ -12,7 +12,7 @@ provider:
 custom:
   environment: ${env:ENVIRONMENT}
 
-  wranglers: ${file(../wranglers.json)}
+  wranglers: ${file(./wranglers.json)}
   ingest: ${self:custom.wranglers.ingest}
   enrichment: ${self:custom.wranglers.enrichment}
   imputation-movements: ${self:custom.wranglers.imputation-movements}

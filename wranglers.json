@@ -1,0 +1,20 @@
+{
+  "ingest": "es-ingest-takeon-data-wrangler",
+  "enrichment": "es-enrichment-wrangler",
+  "strata": "es-strata-wrangler",
+  "imputation-movements": "es-imputation-calculate-movement-wrangler",
+  "imputation-means": "es-imputation-calculate-means-wrangler",
+  "imputation-iqrs": "es-imputation-iqrs-wrangler",
+  "imputation-atyps": "es-imputation-atypicals-wrangler",
+  "imputation-recalc-means": "es-imputation-recalculate-means-wrangler",
+  "imputation-calc-factors": "es-imputation-calculate-factors-wrangler",
+  "imputation-apply-factors": "es-imputation-apply-factors-wrangler",
+  "aggregation-top2": "es-aggregation-top2-wrangler",
+  "disclosure-wrangler": "es-disclosure-wrangler",
+  "error-capture": "runtime_error_capture",
+  "method-return": "es_statistical_method_return",
+  "all-gb-region": "es-add-regionless-wrangler",
+  "aggregation-bricks-splitter": "es-aggregation-bricks-splitter-wrangler",
+  "aggregation-column": "es-aggregation-column-wrangler",
+  "aggregation-combiner": "es-aggregation-combiner"
+}

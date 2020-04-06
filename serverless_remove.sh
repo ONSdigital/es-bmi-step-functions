@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 cd step-function-repository
-
+serverless plugin install --name serverless-pseudo-parameters
 serverless plugin install --name serverless-step-functions
 echo Destroying Sand and Gravel serverless bundle...
 serverless remove --config sg_serverless.yml --verbose;

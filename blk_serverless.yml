@@ -55,6 +55,7 @@ stepFunctions:
               explanation.$: $.explanation
               factors_parameters.$: $.factors_parameters
               file_names.$: $.file_names
+              ingestion_parameters.$: $.ingestion_parameters
               location.$: $.location
               lookups.$: $.lookups
               marine_mismatch_check.$: $.marine_mismatch_check
@@ -107,6 +108,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 in_file_name.$: $.file_names.input_file
+                ingestion_parameters.$: $.ingestion_parameters
                 location.$: $.location
                 out_file_name.$: $.file_names.ingest
                 outgoing_message_group_id.$: $.file_names.ingest

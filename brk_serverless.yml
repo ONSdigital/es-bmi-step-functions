@@ -56,6 +56,7 @@ stepFunctions:
               explanation.$: $.explanation
               factors_parameters.$: $.factors_parameters
               file_names.$: $.file_names
+              final_output_location.$: $.final_output_location
               location.$: $.location
               lookups.$: $.lookups
               marine_mismatch_check.$: $.marine_mismatch_check
@@ -617,6 +618,7 @@ stepFunctions:
                 disclosivity_marker.$: $.disclosivity_marker
                 disclosure_stages.$: $.disclosure_stages
                 explanation.$: $.explanation
+                final_output_location.$: $.final_output_location
                 in_file_name.$: $.file_names.aggregation_combiner[0]
                 incoming_message_group_id.$: $.file_names.aggregation_combiner[0]
                 location.$: $.location

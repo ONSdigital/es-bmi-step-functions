@@ -55,6 +55,7 @@ stepFunctions:
               explanation.$: $.explanation
               factors_parameters.$: $.factors_parameters
               file_names.$: $.file_names
+              final_output_location.$: $.final_output_location
               ingestion_parameters.$: $.ingestion_parameters
               location.$: $.location
               lookups.$: $.lookups
@@ -477,6 +478,7 @@ stepFunctions:
                 disclosivity_marker.$: $.disclosivity_marker
                 disclosure_stages.$: $.disclosure_stages
                 explanation.$: $.explanation
+                final_output_location.$: $.final_output_location
                 in_file_name.$: $.file_names.aggregation_combiner
                 incoming_message_group_id.$: $.file_names.aggregation_combiner
                 location.$: $.location

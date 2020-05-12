@@ -476,6 +476,7 @@ stepFunctions:
                 disclosivity_marker.$: $.disclosivity_marker
                 disclosure_stages.$: $.disclosure_stages
                 explanation.$: $.explanation
+                final_output_location.$: $.final_output_location
                 in_file_name.$: $.file_names.aggregation_combiner[1]
                 incoming_message_group_id.$: $.file_names.aggregation_combiner[1]
                 location.$: $.location

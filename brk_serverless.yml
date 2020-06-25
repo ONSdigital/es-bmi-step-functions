@@ -13,7 +13,8 @@ custom:
   environment: ${env:ENVIRONMENT}
 
   wranglers: ${file(./wranglers.json)}
-  ingest: ${self:custom.wranglers.ingest}
+  ingest-data: ${self:custom.wranglers.ingest-data}
+  ingest-bricks: ${self:custom.wranglers.ingest-bricks}
   enrichment: ${self:custom.wranglers.enrichment}
   imputation-movements: ${self:custom.wranglers.imputation-movements}
   imputation-means: ${self:custom.wranglers.imputation-means}
@@ -57,6 +58,7 @@ stepFunctions:
               factors_parameters.$: $.factors_parameters
               file_names.$: $.file_names
               final_output_location.$: $.final_output_location
+              ingestion_parameters.$: $.ingestion_parameters
               location.$: $.location
               lookups.$: $.lookups
               marine_mismatch_check.$: $.marine_mismatch_check
@@ -82,7 +84,7 @@ stepFunctions:
 
           Choice State:
             Choices:
-              - Next: Ingest
+              - Next: Ingest Data
                 NumericEquals: 0
                 Variable: $.checkpoint
               - Next: Enrichment
@@ -96,9 +98,9 @@ stepFunctions:
                 Variable: $.checkpoint
             Type: Choice
 
-          Ingest:
-            Next: Enrichment
-            Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.ingest}"  # yamllint disable-line rule:line-length
+          Ingest Data:
+            Next: Ingest Bricks
+            Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.ingest-data}"  # yamllint disable-line rule:line-length
             Catch:
               - ErrorEquals: [States.ALL]
                 ResultPath: $.error
@@ -106,11 +108,32 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 in_file_name.$: $.file_names.input_file
+                ingestion_parameters.$: $.ingestion_parameters
+                location.$: $.location
+                out_file_name.$: $.file_names.ingest_bricks_in
+                outgoing_message_group_id.$: $.file_names.ingest_bricks_in
+                period.$: $.period
+                periodicity.$: $.periodicity
+                queue_url.$: $.queue_url
+                run_id.$: $.run_id
+                sns_topic_arn.$: $.sns_topic_arn
+            ResultPath: $.data.lambdaresult
+            Type: Task
+
+          Ingest Bricks:
+            Next: Enrichment
+            Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.ingest-bricks}"  # yamllint disable-line rule:line-length
+            Catch:
+              - ErrorEquals: [States.ALL]
+                ResultPath: $.error
+                Next: Failure
+            Parameters:
+              RuntimeVariables:
+                in_file_name.$: $.file_names.ingest_bricks_in
+                ingestion_parameters.$: $.ingestion_parameters
                 location.$: $.location
                 out_file_name.$: $.file_names.ingest
                 outgoing_message_group_id.$: $.file_names.ingest
-                period.$: $.period
-                periodicity.$: $.periodicity
                 queue_url.$: $.queue_url
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn

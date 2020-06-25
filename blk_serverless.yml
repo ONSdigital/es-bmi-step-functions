@@ -13,7 +13,7 @@ custom:
   environment: ${env:ENVIRONMENT}
 
   wranglers: ${file(./wranglers.json)}
-  ingest: ${self:custom.wranglers.ingest}
+  ingest: ${self:custom.wranglers.ingest-data}
   enrichment: ${self:custom.wranglers.enrichment}
   imputation-movements: ${self:custom.wranglers.imputation-movements}
   imputation-means: ${self:custom.wranglers.imputation-means}

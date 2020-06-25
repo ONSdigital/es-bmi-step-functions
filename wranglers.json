@@ -1,5 +1,6 @@
 {
-  "ingest": "es-ingest-takeon-data-wrangler",
+  "ingest-data": "es-ingest-takeon-data-wrangler",
+  "ingest-bricks": "es-ingest-brick-type-wrangler",
   "enrichment": "es-enrichment-wrangler",
   "strata": "es-strata-wrangler",
   "imputation-movements": "es-imputation-calculate-movement-wrangler",

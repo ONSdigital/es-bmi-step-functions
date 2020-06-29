@@ -130,6 +130,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 in_file_name.$: $.file_names.ingest_bricks_in
+                incoming_message_group_id.$: $.file_names.ingest_bricks_in
                 ingestion_parameters.$: $.ingestion_parameters
                 location.$: $.location
                 out_file_name.$: $.file_names.ingest

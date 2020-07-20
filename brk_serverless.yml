@@ -92,7 +92,7 @@ stepFunctions:
                 StringEquals: "imputation"
                 Variable: $.checkpoint
               - Next: Re-organise Data
-                StringEquals: "disclosure"
+                StringEquals: "aggregation"
                 Variable: $.checkpoint
             Type: Choice
 

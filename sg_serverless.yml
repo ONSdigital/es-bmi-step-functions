@@ -87,18 +87,13 @@ stepFunctions:
               - Next: Enrichment
                 StringEquals: "enrichment"
                 Variable: $.checkpoint
-              - Next: Strata
-                StringEquals: "strata"
-                Variable: $.checkpoint
               - Next: Imputation Calculate Movements
                 StringEquals: "imputation"
                 Variable: $.checkpoint
               - Next: Aggregation
                 StringEquals: "aggregation"
                 Variable: $.checkpoint
-              - Next: Disclosure
-                StringEquals: "disclosure"
-                Variable: $.checkpoint
+
             Type: Choice
 
           Ingest:

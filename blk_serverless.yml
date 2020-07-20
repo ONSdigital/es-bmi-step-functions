@@ -92,9 +92,6 @@ stepFunctions:
               - Next: Aggregation
                 StringEquals: "aggregation"
                 Variable: $.checkpoint
-              - Next: Disclosure
-                StringEquals: "disclosure"
-                Variable: $.checkpoint
             Type: Choice
 
           Ingest:

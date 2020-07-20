@@ -83,16 +83,16 @@ stepFunctions:
           Choice State:
             Choices:
               - Next: Ingest Data
-                NumericEquals: 0
+                StringEquals: "ingest"
                 Variable: $.checkpoint
               - Next: Enrichment
-                NumericEquals: 1
+                StringEquals: "enrichment"
                 Variable: $.checkpoint
               - Next: Imputation Calculate Movements
-                NumericEquals: 3
+                StringEquals: "imputation"
                 Variable: $.checkpoint
               - Next: Re-organise Data
-                NumericEquals: 4
+                StringEquals: "aggregation"
                 Variable: $.checkpoint
             Type: Choice
 

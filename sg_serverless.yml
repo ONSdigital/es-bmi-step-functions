@@ -480,13 +480,21 @@ stepFunctions:
             Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.method-return}"  # yamllint disable-line rule:line-length
             InputPath: $
             ResultPath: $.data.lambdaresult
-            Type: Task
+            Parameters:
+              RuntimeVariables:
+                run_id.$: $.run_id
+              Type: Task
 
-          Failure:
-            End: true
-            Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.error-capture}"  # yamllint disable-line rule:line-length
-            InputPath: $
-            ResultPath: $.data.lambdaresult
+            Failure:
+              End: true
+              Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.error-capture}"  # yamllint disable-line rule:line-length
+              InputPath: $
+              ResultPath: $.data.lambdaresult
+              Parameters:
+                RuntimeVariables:
+                  run_id.$: $.run_id
+                  error.$: $.error
+                  sns_topic_arn.$: $.sns_topic_arn
             Type: Task
 
 plugins:

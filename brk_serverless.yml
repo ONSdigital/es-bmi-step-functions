@@ -615,7 +615,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 run_id.$: $.run_id
-              Type: Task
+            Type: Task
 
             Failure:
               End: true
@@ -627,7 +627,7 @@ stepFunctions:
                   run_id.$: $.run_id
                   error.$: $.error
                   sns_topic_arn.$: $.sns_topic_arn
-            Type: Task
+              Type: Task
 
 plugins:
   - serverless-step-functions

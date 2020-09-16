@@ -67,8 +67,8 @@ stepFunctions:
               publishable_indicator.$: $.publishable_indicator
               questions_list.$: $.questions_list
               run_id.$: $.run_id
-              sns_topic_arn.$: $.sns_topic_arn
               snapshot_s3_uri.$: $.snapshot_s3_uri
+              sns_topic_arn.$: $.sns_topic_arn
               stage5_threshold.$: $.stage5_threshold
               sum_columns.$: $.sum_columns
               survey.$: $.survey

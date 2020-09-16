@@ -46,6 +46,7 @@ stepFunctions:
               additional_aggregated_column.$: $.additional_aggregated_column
               aggregated_column.$: $.aggregated_column
               aggregation_type.$: $.aggregation_type
+              bpm_queue_url.$: $.bpm_queue_url
               cell_total_column.$: $.cell_total_column
               checkpoint.$: $.checkpoint
               disclosivity_marker.$: $.disclosivity_marker
@@ -66,6 +67,7 @@ stepFunctions:
               publishable_indicator.$: $.publishable_indicator
               questions_list.$: $.questions_list
               run_id.$: $.run_id
+              sns_topic_arn.$: $.sns_topic_arn
               stage5_threshold.$: $.stage5_threshold
               sum_columns.$: $.sum_columns
               survey.$: $.survey
@@ -74,8 +76,8 @@ stepFunctions:
               top1_column.$: $.top1_column
               top2_column.$: $.top2_column
               total_columns.$: $.total_columns
+              total_steps.$: $.total_steps
               unique_identifier.$: $.unique_identifier
-              sns_topic_arn.$: $.sns_topic_arn
             Type: Pass
 
           Choice State:
@@ -103,6 +105,7 @@ stepFunctions:
                 Next: Failure
             Parameters:
               RuntimeVariables:
+                bpm_queue_url.$: $.bpm_queue_url
                 in_file_name.$: $.file_names.input_file
                 ingestion_parameters.$: $.ingestion_parameters
                 location.$: $.location
@@ -111,6 +114,7 @@ stepFunctions:
                 periodicity.$: $.periodicity
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
+                total_steps.$: $.total_steps
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -124,6 +128,7 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                bpm_queue_url.$: $.bpm_queue_url
                 in_file_name.$: $.file_names.ingest
                 lookups.$: $.lookups
                 location.$: $.location
@@ -131,8 +136,9 @@ stepFunctions:
                 marine_mismatch_check.$: $.marine_mismatch_check
                 period_column.$: $.period_column
                 run_id.$: $.run_id
-                survey_column.$: $.survey_column
                 sns_topic_arn.$: $.sns_topic_arn
+                survey_column.$: $.survey_column
+                total_steps.$: $.total_steps
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -146,6 +152,7 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                bpm_queue_url.$: $.bpm_queue_url
                 current_data.$: $.file_names.current_data
                 in_file_name.$: $.file_names.enrichment
                 location.$: $.location
@@ -158,8 +165,9 @@ stepFunctions:
                 previous_data.$: $.file_names.previous_data
                 questions_list.$: $.questions_list
                 run_id.$: $.run_id
-                unique_identifier.$: $.unique_identifier
                 sns_topic_arn.$: $.sns_topic_arn
+                total_steps.$: $.total_steps
+                unique_identifier.$: $.unique_identifier
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -183,6 +191,7 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                bpm_queue_url.$: $.bpm_queue_url
                 distinct_values.$: $.distinct_values
                 in_file_name.$: $.file_names.imputation_calculate_movement
                 location.$: $.location
@@ -203,6 +212,7 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                bpm_queue_url.$: $.bpm_queue_url
                 distinct_values.$: $.distinct_values
                 in_file_name.$: $.file_names.imputation_calculate_means
                 location.$: $.location
@@ -222,6 +232,7 @@ stepFunctions:
                 Next: Failure
             Parameters:
               RuntimeVariables:
+                bpm_queue_url.$: $.bpm_queue_url
                 in_file_name.$: $.file_names.imputation_iqrs
                 location.$: $.location
                 out_file_name.$: $.file_names.imputation_atypicals
@@ -241,6 +252,7 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                bpm_queue_url.$: $.bpm_queue_url
                 factors_parameters.$: $.factors_parameters
                 in_file_name.$: $.file_names.imputation_atypicals
                 location.$: $.location
@@ -260,6 +272,7 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                bpm_queue_url.$: $.bpm_queue_url
                 distinct_values.$: $.distinct_values
                 in_file_name.$: $.file_names.add_gb_region
                 location.$: $.location
@@ -280,6 +293,7 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                bpm_queue_url.$: $.bpm_queue_url
                 distinct_values.$: $.distinct_values
                 factors_parameters.$: $.factors_parameters
                 in_file_name.$: $.file_names.imputation_recalculate_means
@@ -303,6 +317,7 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                bpm_queue_url.$: $.bpm_queue_url
                 current_data.$: $.file_names.current_data
                 distinct_values.$: $.distinct_values
                 factors_parameters.$: $.factors_parameters
@@ -314,9 +329,10 @@ stepFunctions:
                 previous_data.$: $.file_names.previous_data
                 questions_list.$: $.questions_list
                 run_id.$: $.run_id
-                unique_identifier.$: $.unique_identifier
-                sum_columns.$: $.sum_columns
                 sns_topic_arn.$: $.sns_topic_arn
+                sum_columns.$: $.sum_columns
+                total_steps.$: $.total_steps
+                unique_identifier.$: $.unique_identifier
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -346,13 +362,15 @@ stepFunctions:
                         additional_aggregated_column.$: $.additional_aggregated_column
                         aggregated_column.$: $.aggregated_column
                         aggregation_type.$: $.aggregation_type[1]
+                        bpm_queue_url.$: $.bpm_queue_url
                         cell_total_column.$: $.cell_total_column[0]
                         in_file_name.$: $.file_names.imputation_apply_factors
                         location.$: $.location
                         out_file_name.$: $.file_names.aggregation_by_column
                         run_id.$: $.run_id
-                        total_columns.$: $.total_columns[1]
                         sns_topic_arn.$: $.sns_topic_arn
+                        total_columns.$: $.total_columns[1]
+                        total_steps.$: $.total_steps
                     Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -366,13 +384,14 @@ stepFunctions:
                         additional_aggregated_column.$: $.additional_aggregated_column
                         aggregated_column.$: $.aggregated_column
                         aggregation_type.$: $.aggregation_type[0]
+                        bpm_queue_url.$: $.bpm_queue_url
                         cell_total_column.$: $.cell_total_column[1]
                         in_file_name.$: $.file_names.imputation_apply_factors
                         location.$: $.location
                         out_file_name.$: $.file_names.aggregation_ent_ref
                         run_id.$: $.run_id
-                        total_columns.$: $.total_columns[0]
                         sns_topic_arn.$: $.sns_topic_arn
+                        total_columns.$: $.total_columns[0]
                     Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -385,14 +404,15 @@ stepFunctions:
                       RuntimeVariables:
                         additional_aggregated_column.$: $.additional_aggregated_column
                         aggregated_column.$: $.aggregated_column
+                        bpm_queue_url.$: $.bpm_queue_url
                         in_file_name.$: $.file_names.imputation_apply_factors
                         location.$: $.location
                         out_file_name.$: $.file_names.aggregation_top2
                         run_id.$: $.run_id
+                        sns_topic_arn.$: $.sns_topic_arn
                         top1_column.$: $.top1_column
                         top2_column.$: $.top2_column
                         total_columns.$: $.total_columns[1]
-                        sns_topic_arn.$: $.sns_topic_arn
                     Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.aggregation-top2}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -414,11 +434,13 @@ stepFunctions:
                   ent_ref_agg.$: $.file_names.aggregation_ent_ref
                   cell_agg.$: $.file_names.aggregation_by_column
                   top2_agg.$: $.file_names.aggregation_top2
+                bpm_queue_url.$: $.bpm_queue_url
                 in_file_name.$: $.file_names.imputation_apply_factors
                 location.$: $.location
                 out_file_name.$: $.file_names.aggregation_combiner
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
+                total_steps.$: $.total_steps
             Type: Task
 
           Disclosure:
@@ -431,6 +453,7 @@ stepFunctions:
             InputPath: $
             Parameters:
               RuntimeVariables:
+                bpm_queue_url.$: $.bpm_queue_url
                 cell_total_column.$: $.cell_total_column[0]
                 disclosivity_marker.$: $.disclosivity_marker
                 disclosure_stages.$: $.disclosure_stages
@@ -443,12 +466,13 @@ stepFunctions:
                 publishable_indicator.$: $.publishable_indicator
                 run_id.$: $.run_id
                 stage5_threshold.$: $.stage5_threshold
+                sns_topic_arn.$: $.sns_topic_arn
                 threshold.$: $.threshold
                 top1_column.$: $.top1_column
                 top2_column.$: $.top2_column
                 total_columns.$: $.total_columns[1]
+                total_steps.$: $.total_steps
                 unique_identifier.$: $.unique_identifier
-                sns_topic_arn.$: $.sns_topic_arn
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -459,7 +483,9 @@ stepFunctions:
             ResultPath: $.data.lambdaresult
             Parameters:
               RuntimeVariables:
+                bpm_queue_url.$: $.bpm_queue_url
                 run_id.$: $.run_id
+                total_steps.$: $.total_steps
             Type: Task
 
           Failure:
@@ -469,8 +495,9 @@ stepFunctions:
             ResultPath: $.data.lambdaresult
             Parameters:
               RuntimeVariables:
-                run_id.$: $.run_id
+                bpm_queue_url.$: $.bpm_queue_url
                 error.$: $.error
+                run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
             Type: Task
 

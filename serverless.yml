@@ -19,11 +19,10 @@ stepFunctions:
         Comment:
         StartAt: Success
         States:
-
           Success:
             End: true
-
             Type: Pass
+
 
 plugins:
   - serverless-step-functions

@@ -580,6 +580,7 @@ stepFunctions:
                         top1_column.$: $.top1_column
                         top2_column.$: $.top2_column
                         total_columns.$: $.total_columns[1]
+                        total_steps.$: $.total_steps
                         sns_topic_arn.$: $.sns_topic_arn
                     Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.aggregation-top2}"  # yamllint disable-line rule:line-length
                     End: true

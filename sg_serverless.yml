@@ -53,7 +53,7 @@ stepFunctions:
               disclosure_stages.$: $.disclosure_stages
               disclosivity_marker.$: $.disclosivity_marker
               distinct_values.$: $.distinct_values
-              enviornment.$: ${self:custom.environment}
+              environment.$: ${self:custom.environment}
               explanation.$: $.explanation
               factors_parameters.$: $.factors_parameters
               file_names.$: $.file_names

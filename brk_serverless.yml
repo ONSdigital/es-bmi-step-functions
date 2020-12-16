@@ -54,6 +54,7 @@ stepFunctions:
               disclosure_stages.$: $.disclosure_stages
               disclosivity_marker.$: $.disclosivity_marker
               distinct_values.$: $.distinct_values
+              enviornment.$: ${self:custom.environment}
               explanation.$: $.explanation
               factors_parameters.$: $.factors_parameters
               file_names.$: $.file_names
@@ -109,6 +110,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 bpm_queue_url.$: $.bpm_queue_url
+                environment.$: $.environment
                 in_file_name.$: $.file_names.input_file
                 ingestion_parameters.$: $.ingestion_parameters
                 location.$: $.location
@@ -132,6 +134,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 bpm_queue_url.$: $.bpm_queue_url
+                environment.$: $.environment
                 in_file_name.$: $.file_names.ingest_bricks_in
                 ingestion_parameters.$: $.ingestion_parameters
                 location.$: $.location
@@ -153,6 +156,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 bpm_queue_url.$: $.bpm_queue_url
+                environment.$: $.environment
                 in_file_name.$: $.file_names.ingest
                 location.$: $.location
                 lookups.$: $.lookups
@@ -178,6 +182,7 @@ stepFunctions:
               RuntimeVariables:
                 bpm_queue_url.$: $.bpm_queue_url
                 current_data.$: $.file_names.current_data
+                environment.$: $.environment
                 in_file_name.$: $.file_names.enrichment
                 location.$: $.location
                 out_file_name.$: $.file_names.imputation_calculate_movement
@@ -217,6 +222,7 @@ stepFunctions:
               RuntimeVariables:
                 bpm_queue_url.$: $.bpm_queue_url
                 distinct_values.$: $.distinct_values
+                environment.$: $.environment
                 in_file_name.$: $.file_names.imputation_calculate_movement
                 location.$: $.location
                 out_file_name.$: $.file_names.imputation_calculate_means
@@ -238,6 +244,7 @@ stepFunctions:
               RuntimeVariables:
                 bpm_queue_url.$: $.bpm_queue_url
                 distinct_values.$: $.distinct_values
+                environment.$: $.environment
                 in_file_name.$: $.file_names.imputation_calculate_means
                 location.$: $.location
                 out_file_name.$: $.file_names.imputation_iqrs
@@ -257,6 +264,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 bpm_queue_url.$: $.bpm_queue_url
+                environment.$: $.environment
                 in_file_name.$: $.file_names.imputation_iqrs
                 location.$: $.location
                 out_file_name.$: $.file_names.imputation_atypicals
@@ -278,6 +286,7 @@ stepFunctions:
               RuntimeVariables:
                 bpm_queue_url.$: $.bpm_queue_url
                 distinct_values.$: $.distinct_values
+                environment.$: $.environment
                 in_file_name.$: $.file_names.imputation_atypicals
                 location.$: $.location
                 out_file_name.$: $.file_names.imputation_recalculate_means
@@ -299,6 +308,7 @@ stepFunctions:
               RuntimeVariables:
                 bpm_queue_url.$: $.bpm_queue_url
                 distinct_values.$: $.distinct_values
+                environment.$: $.environment
                 factors_parameters.$: $.factors_parameters
                 in_file_name.$: $.file_names.imputation_recalculate_means
                 location.$: $.location
@@ -324,6 +334,7 @@ stepFunctions:
                 bpm_queue_url.$: $.bpm_queue_url
                 current_data.$: $.file_names.current_data
                 distinct_values.$: $.distinct_values
+                environment.$: $.environment
                 factors_parameters.$: $.factors_parameters
                 in_file_name.$: $.file_names.imputation_calculate_factors
                 location.$: $.location
@@ -351,6 +362,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 bpm_queue_url.$: $.bpm_queue_url
+                environment.$: $.environment
                 factors_parameters.$: $.factors_parameters
                 in_file_name.$: $.file_names.imputation_apply_factors
                 location.$: $.location
@@ -392,6 +404,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[0]
                         bpm_queue_url.$: $.bpm_queue_url
                         cell_total_column.$: $.cell_total_column[0]
+                        environment.$: $.environment
                         in_file_name.$: $.file_names.aggregation_splitter[1]
                         location.$: $.location
                         out_file_name.$: $.file_names.aggregation_by_column[1]
@@ -414,6 +427,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[0]
                         bpm_queue_url.$: $.bpm_queue_url
                         cell_total_column.$: $.cell_total_column[1]
+                        environment.$: $.environment
                         in_file_name.$: $.file_names.aggregation_splitter[1]
                         location.$: $.location
                         out_file_name.$: $.file_names.aggregation_ent_ref[1]
@@ -433,6 +447,7 @@ stepFunctions:
                         additional_aggregated_column.$: $.additional_aggregated_column
                         aggregated_column.$: $.aggregated_column[0]
                         bpm_queue_url.$: $.bpm_queue_url
+                        environment.$: $.environment
                         in_file_name.$: $.file_names.aggregation_splitter[1]
                         location.$: $.location
                         out_file_name.$: $.file_names.aggregation_top2[1]
@@ -464,6 +479,7 @@ stepFunctions:
                   cell_agg.$: $.file_names.aggregation_by_column[1]
                   top2_agg.$: $.file_names.aggregation_top2[1]
                 bpm_queue_url.$: $.bpm_queue_url
+                environment.$: $.environment
                 in_file_name.$: $.file_names.aggregation_splitter[1]
                 location.$: $.location
                 out_file_name.$: $.file_names.aggregation_combiner[1]
@@ -486,6 +502,7 @@ stepFunctions:
                 cell_total_column.$: $.cell_total_column[0]
                 disclosivity_marker.$: $.disclosivity_marker
                 disclosure_stages.$: $.disclosure_stages
+                environment.$: $.environment
                 explanation.$: $.explanation
                 final_output_location.$: $.final_output_location
                 in_file_name.$: $.file_names.aggregation_combiner[1]
@@ -533,6 +550,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[1]
                         bpm_queue_url.$: $.bpm_queue_url
                         cell_total_column.$: $.cell_total_column[0]
+                        environment.$: $.environment
                         in_file_name.$: $.file_names.aggregation_splitter[0]
                         location.$: $.location
                         out_file_name.$: $.file_names.aggregation_by_column[0]
@@ -554,6 +572,7 @@ stepFunctions:
                         aggregated_column.$: $.aggregated_column[1]
                         bpm_queue_url.$: $.bpm_queue_url
                         cell_total_column.$: $.cell_total_column[1]
+                        environment.$: $.environment
                         in_file_name.$: $.file_names.aggregation_splitter[0]
                         location.$: $.location
                         out_file_name.$: $.file_names.aggregation_ent_ref[0]
@@ -573,6 +592,7 @@ stepFunctions:
                         additional_aggregated_column.$: $.additional_aggregated_column
                         aggregated_column.$: $.aggregated_column[1]
                         bpm_queue_url.$: $.bpm_queue_url
+                        environment.$: $.environment
                         in_file_name.$: $.file_names.aggregation_splitter[0]
                         location.$: $.location
                         out_file_name.$: $.file_names.aggregation_top2[0]
@@ -604,6 +624,7 @@ stepFunctions:
                   cell_agg.$: $.file_names.aggregation_by_column[0]
                   top2_agg.$: $.file_names.aggregation_top2[0]
                 bpm_queue_url.$: $.bpm_queue_url
+                environment.$: $.environment
                 in_file_name.$: $.file_names.aggregation_splitter[0]
                 location.$: $.location
                 out_file_name.$: $.file_names.aggregation_combiner[0]
@@ -626,6 +647,7 @@ stepFunctions:
                 cell_total_column.$: $.cell_total_column[0]
                 disclosivity_marker.$: $.disclosivity_marker
                 disclosure_stages.$: $.disclosure_stages
+                environment.$: $.environment
                 explanation.$: $.explanation
                 final_output_location.$: $.final_output_location
                 in_file_name.$: $.file_names.aggregation_combiner[0]
@@ -653,6 +675,7 @@ stepFunctions:
             Parameters:
               RuntimeVariables:
                 bpm_queue_url.$: $.bpm_queue_url
+                environment.$: $.environment
                 run_id.$: $.run_id
             Type: Task
 
@@ -663,6 +686,7 @@ stepFunctions:
             ResultPath: $.data.lambdaresult
             Parameters:
               RuntimeVariables:
+                environment.$: $.environment
                 error.$: $.error
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn

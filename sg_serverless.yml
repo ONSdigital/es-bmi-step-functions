@@ -119,6 +119,7 @@ stepFunctions:
                 periodicity.$: $.periodicity
                 snapshot_s3_uri.$: $.snapshot_s3_uri
                 sns_topic_arn.$: $.sns_topic_arn
+                survey.$: $.survey
                 run_id.$: $.run_id
                 total_steps.$: $.total_steps
             ResultPath: $.data.lambdaresult
@@ -143,6 +144,7 @@ stepFunctions:
                 marine_mismatch_check.$: $.marine_mismatch_check
                 period_column.$: $.period_column
                 run_id.$: $.run_id
+                survey.$: $.survey
                 survey_column.$: $.survey_column
                 sns_topic_arn.$: $.sns_topic_arn
                 total_steps.$: $.total_steps
@@ -167,6 +169,7 @@ stepFunctions:
                 out_file_name.$: $.file_names.strata
                 period.$: $.period
                 run_id.$: $.run_id
+                survey.$: $.survey
                 survey_column.$: $.survey_column
                 sns_topic_arn.$: $.sns_topic_arn
                 total_steps.$: $.total_steps
@@ -198,6 +201,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
+                survey.$: $.survey
                 total_steps.$: $.total_steps
                 unique_identifier.$: $.unique_identifier
             ResultPath: $.data.lambdaresult
@@ -231,6 +235,7 @@ stepFunctions:
                 out_file_name.$: $.file_names.add_gb_region
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
+                survey.$: $.survey
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -253,6 +258,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
+                survey.$: $.survey
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -275,6 +281,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
+                survey.$: $.survey
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -295,6 +302,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
+                survey.$: $.survey
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -317,6 +325,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
+                survey.$: $.survey
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -342,6 +351,7 @@ stepFunctions:
                 questions_list.$: $.questions_list
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
+                survey.$: $.survey
             ResultPath: $.data.lambdaresult
             Type: Task
 
@@ -370,6 +380,7 @@ stepFunctions:
                 run_id.$: $.run_id
                 unique_identifier.$: $.unique_identifier
                 sum_columns.$: $.sum_columns
+                survey.$: $.survey
                 sns_topic_arn.$: $.sns_topic_arn
                 total_steps.$: $.total_steps
             ResultPath: $.data.lambdaresult
@@ -409,6 +420,7 @@ stepFunctions:
                         out_file_name.$: $.file_names.aggregation_by_column
                         run_id.$: $.run_id
                         sns_topic_arn.$: $.sns_topic_arn
+                        survey.$: $.survey
                         total_columns.$: $.total_columns[1]
                         total_steps.$: $.total_steps
                     Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
@@ -433,6 +445,7 @@ stepFunctions:
                         run_id.$: $.run_id
                         total_columns.$: $.total_columns[0]
                         sns_topic_arn.$: $.sns_topic_arn
+                        survey.$: $.survey
                     Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.aggregation-column}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -456,6 +469,7 @@ stepFunctions:
                         total_columns.$: $.total_columns[1]
                         total_steps.$: $.total_steps
                         sns_topic_arn.$: $.sns_topic_arn
+                        survey.$: $.survey
                     Resource: "arn:aws:lambda:eu-west-2:#{AWS::AccountId}:function:${self:custom.aggregation-top2}"  # yamllint disable-line rule:line-length
                     End: true
 
@@ -484,6 +498,7 @@ stepFunctions:
                 out_file_name.$: $.file_names.aggregation_combiner
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
+                survey.$: $.survey
                 total_steps.$: $.total_steps
             Type: Task
 
@@ -512,6 +527,7 @@ stepFunctions:
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
                 stage5_threshold.$: $.stage5_threshold
+                survey.$: $.survey
                 threshold.$: $.threshold
                 top1_column.$: $.top1_column
                 top2_column.$: $.top2_column
@@ -532,6 +548,7 @@ stepFunctions:
                 environment.$: $.environment
                 run_id.$: $.run_id
                 total_steps.$: $.total_steps
+                survey.$: $.survey
             Type: Task
 
           Failure:
@@ -545,6 +562,7 @@ stepFunctions:
                 error.$: $.error
                 run_id.$: $.run_id
                 sns_topic_arn.$: $.sns_topic_arn
+                survey.$: $.survey
             Type: Task
 
 plugins:

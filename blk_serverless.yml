@@ -520,7 +520,7 @@ stepFunctions:
                 bpm_queue_url.$: $.bpm_queue_url
                 environment.$: $.environment
                 run_id.$: $.run_id
-                survey.$: $.survey        
+                survey.$: $.survey
             Type: Task
 
           Failure:
